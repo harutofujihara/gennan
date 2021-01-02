@@ -1,1 +1,2 @@
-export * from "./Gennan";
+import { Container } from "./Container";
+export { Container as Gennan };

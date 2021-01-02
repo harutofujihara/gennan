@@ -29,7 +29,7 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, "dev"),
     open: true,
-    port: 3000,
+    port: 3001,
   },
   plugins: [
     new HtmlWebpackPlugin({

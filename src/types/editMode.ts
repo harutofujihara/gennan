@@ -3,13 +3,13 @@ const MarkupMode = {
   Square: "Square",
   Triangle: "Triangle",
   Cross: "Cross",
-  Text: "Text",
+  Alpha: "Alpha",
   Num: "Num",
 } as const;
 
 const EditMoveMode = {
   Move: "Move",
-  Pass: "Pass",
+  // Pass: "Pass",
 } as const;
 
 const EditFixedStoneMode = {

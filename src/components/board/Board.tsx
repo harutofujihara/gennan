@@ -4,7 +4,7 @@ import { Square } from "./square";
 
 type Props = {
   className?: string;
-  sideWidth: number;
+  width: number;
   viewBoard: ViewBoard;
   startPoint: Point;
   sideNum: number;
@@ -26,7 +26,7 @@ export type PointPosition = typeof PointPosition[keyof typeof PointPosition];
 
 export const Board: FC<Props> = ({
   viewBoard,
-  sideWidth,
+  width,
   className,
   startPoint,
   sideNum,
@@ -42,7 +42,7 @@ export const Board: FC<Props> = ({
   };
 
   useEffect(() => {
-    setSquareWidth(sideWidth / sideNum);
+    setSquareWidth(width / sideNum);
   });
 
   const Squares = viewBoard
@@ -108,7 +108,7 @@ export const Board: FC<Props> = ({
       baseProfile="full"
       xmlns="http://www.w3.org/2000/svg"
       width="100%"
-      height="50%"
+      height="100%"
     >
       <rect width="100%" height="100%" fill="#f5be7e" stroke="black" />
       {Squares}
