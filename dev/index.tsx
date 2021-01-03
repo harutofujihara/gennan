@@ -24,7 +24,7 @@ const App: FC = () => {
         onPathChange={(path) => console.log(path)}
         // startPoint={{ x: 9, y: 1 }}
         // sideCount={9}
-        usage="view"
+        usage="viewWide"
         onSgfChange={(s: string) => console.log(s)}
       />
     </div>

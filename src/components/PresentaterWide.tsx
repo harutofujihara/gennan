@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlay,
   faInfoCircle,
-  faExpandArrowsAlt,
-  faCompressArrowsAlt,
+  faCompress,
+  faExpand,
 } from "@fortawesome/free-solid-svg-icons";
 import { useResizeObserver } from "../hooks/useResizeObserver";
 import { BoardContainer } from "./board/BoardContainer";
@@ -60,12 +60,12 @@ export const PresenterWide: FC<Props> = ({
         />
 
         <FontAwesomeIcon
-          icon={isScaleVisible ? faExpandArrowsAlt : faCompressArrowsAlt}
+          icon={isScaleVisible ? faExpand : faCompress}
           style={{
-            fontSize: `${containerWidth / 30}px`,
+            fontSize: `${containerWidth / 35}px`,
             position: "absolute",
             right: containerWidth * 0.05 + "px",
-            top: containerWidth * 0.04 + "px",
+            top: containerWidth * 0.05 + "px",
             transform: "translateX(50%)",
           }}
           onClick={() => setIsScaleVisible(!isScaleVisible)}

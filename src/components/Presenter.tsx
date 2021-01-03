@@ -15,8 +15,8 @@ import {
   faCaretUp,
   faCircle as faFillCircle,
   faCaretRight,
-  faCompressArrowsAlt,
-  faExpandArrowsAlt,
+  faExpand,
+  faCompress,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faSquare,
@@ -240,13 +240,12 @@ export const Presenter: FC<Props> = ({
         />
 
         <FontAwesomeIcon
-          icon={isScaleVisible ? faCompressArrowsAlt : faExpandArrowsAlt}
+          icon={isScaleVisible ? faExpand : faCompress}
           style={{
             fontSize: `${containerWidth / 24}px`,
             position: "absolute",
-            right: containerWidth * 0.025 + "px",
+            left: containerWidth * 0.01 + "px",
             top: containerWidth * 0.1 + "px",
-            transform: "translateX(50%)",
           }}
           onClick={() => setIsScaleVisible(!isScaleVisible)}
         />
