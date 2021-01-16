@@ -6,7 +6,7 @@ import {
   Move,
   MarkupSymbol,
 } from "gennan-core";
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 
 type Args = {
   initGnc: GennanCore;
@@ -107,13 +107,28 @@ const useGennan = ({
         break;
     }
 
-    if (onSgfChange != null && gnc.sgf !== cloned.sgf) onSgfChange(cloned.sgf);
-    if (onPathChange != null && gnc.currentPath !== cloned.currentPath)
-      onPathChange(cloned.currentPath);
+    // if (onSgfChange != null && gnc.sgf !== cloned.sgf) {
+    //   onSgfChange(cloned.sgf);
+    // }
+    // if (onPathChange != null && gnc.currentPath !== cloned.currentPath) {
+    //   onPathChange(cloned.currentPath);
+    // }
+
     return cloned;
   };
 
   const [gnc, dispatch] = useReducer(reducer, initGnc);
+
+  if (onSgfChange != null) {
+    useEffect(() => {
+      onSgfChange(gnc.sgf);
+    }, [gnc.sgf, onSgfChange]);
+  }
+  if (onPathChange != null) {
+    useEffect(() => {
+      onPathChange(gnc.currentPath);
+    }, [gnc.currentPath, onPathChange]);
+  }
 
   // operation
   const forward = (idx: number = 0): void => {
