@@ -34,7 +34,7 @@ type Others = {
   startPoint?: Point;
 };
 
-type Props = Others & RequireOne<Options>;
+export type GennanProps = Others & RequireOne<Options>;
 
 export type EditModeInfo = {
   em: EditMode;
@@ -42,7 +42,7 @@ export type EditModeInfo = {
   onClick: () => void;
 };
 
-export const Container: FC<Props> = ({
+export const Container: FC<GennanProps> = ({
   lang = "ja",
   usage = "view",
   sgf,
