@@ -52,7 +52,7 @@ export const Container: FC<GennanProps> = ({
   onPathChange,
   startPoint = { x: 1, y: 1 },
   sideCount,
-}: Props) => {
+}: GennanProps) => {
   console.log("Gennan is rendering!");
 
   const initGnc = sgf ? GennanCore.createFromSgf(sgf) : GennanCore.create(gn);
