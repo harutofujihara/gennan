@@ -34,7 +34,7 @@ type Others = {
   startPoint?: Point;
 };
 
-export type GennanProps = Others & RequireOne<Options>;
+export type Props = Others & RequireOne<Options>;
 
 export type EditModeInfo = {
   em: EditMode;
@@ -42,7 +42,7 @@ export type EditModeInfo = {
   onClick: () => void;
 };
 
-export const Container: FC<GennanProps> = ({
+export const Container: FC<Props> = ({
   lang = "ja",
   usage = "view",
   sgf,
@@ -52,7 +52,7 @@ export const Container: FC<GennanProps> = ({
   onPathChange,
   startPoint = { x: 1, y: 1 },
   sideCount,
-}: GennanProps) => {
+}: Props) => {
   console.log("Gennan is rendering!");
 
   const initGnc = sgf ? GennanCore.createFromSgf(sgf) : GennanCore.create(gn);
