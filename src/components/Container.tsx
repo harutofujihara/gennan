@@ -19,12 +19,24 @@ import { useGennan } from "../hooks";
 import { PresenterWide } from "./PresentaterWide";
 import { Presenter } from "./Presenter";
 
-type Options = {
+// type Options = {
+//   sgf?: string;
+//   gridNum?: GridNum;
+// };
+// type Others = {
+//   usage?: "view" | "viewWide" | "new" | "edit";
+//   path?: Array<number>;
+//   onSgfChange?: (sgf: string) => void;
+//   onPathChange?: (path: TreePath) => void;
+//   lang?: "ja" | "en";
+//   sideCount?: number;
+//   startPoint?: Point;
+// };
+// export type Props = Others & RequireOne<Options>;
+
+export type Props = {
   sgf?: string;
   gridNum?: GridNum;
-};
-
-type Others = {
   usage?: "view" | "viewWide" | "new" | "edit";
   path?: Array<number>;
   onSgfChange?: (sgf: string) => void;
@@ -33,8 +45,6 @@ type Others = {
   sideCount?: number;
   startPoint?: Point;
 };
-
-export type Props = Others & RequireOne<Options>;
 
 export type EditModeInfo = {
   em: EditMode;
@@ -56,6 +66,7 @@ export const Container: FC<Props> = ({
   console.log("Gennan is rendering!");
 
   const initGnc = sgf ? GennanCore.createFromSgf(sgf) : GennanCore.create(gn);
+
   if (path != null) initGnc.playToPath(path);
   const [
     gnc,
