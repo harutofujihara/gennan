@@ -1,2 +1,3 @@
-import { Container, Props } from "./Container";
-export { Container as Gennan, Props };
+import { Props } from "./Container";
+import { ErrorBoundaryContainer } from "./ErrorBoundaryContainer";
+export { ErrorBoundaryContainer as Gennan, Props };
