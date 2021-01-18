@@ -1,14 +1,14 @@
 import React, { FC, useEffect, useRef, useState } from "react";
 import { Container, Props as ContainerProps } from "./Container";
-import { ErrorBoundary } from "react-error-boundary";
+import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 
-function ErrorFallback({ error, resetErrorBoundary }) {
-  const ref = useRef(null);
+function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
+  const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
 
   // mount or unmount
   useEffect(() => {
-    setWidth(ref.current.offsetWidth);
+    if (ref.current != null) setWidth(ref.current.offsetWidth);
   }, []);
 
   return (
