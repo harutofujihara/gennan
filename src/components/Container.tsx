@@ -19,6 +19,11 @@ import { useGennan } from "../hooks";
 import { PresenterWide } from "./PresentaterWide";
 import { Presenter } from "./Presenter";
 
+// for SSR
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+config.autoAddCss = false;
+
 // type Options = {
 //   sgf?: string;
 //   gridNum?: GridNum;
