@@ -127,7 +127,7 @@ const useGennan = ({
   if (onPathChange != null) {
     useEffect(() => {
       onPathChange(gnc.currentPath);
-    }, [gnc.currentPath, onPathChange]);
+    }, [gnc]);
   }
 
   // operation
