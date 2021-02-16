@@ -66,6 +66,7 @@ const EditModeButton = styled.a`
     font-weight: bold;
     transition: 0.4s;
     background: ${isActive ? "#b0b0b0" : "#f0f0f0"};
+    cursor: pointer;
     i {
       line-height: ${`${width}px`};
     }
@@ -551,6 +552,7 @@ export const Presenter: FC<Props> = ({
               left: boardContainerWidthPx / 18 + "px",
               userSelect: "none",
               opacity: isUndoIconActive ? 1 : 0.5,
+              cursor: "pointer",
             }}
             onClick={onClickUndoIcon}
           />
@@ -567,6 +569,7 @@ export const Presenter: FC<Props> = ({
                 left: (15 / 40) * boardContainerWidthPx + "px",
                 userSelect: "none",
                 opacity: isTurnedPlayIconActive ? 1 : 0.5,
+                cursor: "pointer",
               }}
               onClick={onClickTurnedPlayIcon}
             />
@@ -578,6 +581,7 @@ export const Presenter: FC<Props> = ({
                 left: (16 / 30) * boardContainerWidthPx + "px",
                 userSelect: "none",
                 opacity: isPlayIconActive ? 1 : 0.5,
+                cursor: "pointer",
               }}
               onClick={onClickPlayIcon}
             />
