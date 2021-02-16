@@ -13,7 +13,7 @@ import { BoardContainer } from "./board/BoardContainer";
 type Props = {
   handlePointClicked?: (p: Point) => void;
   sideNum?: number;
-  startPoint?: Point;
+  fulcrumPoint?: Point;
   viewBoard: ViewBoard;
   gameName?: string;
   blackPlayer?: string;
@@ -28,7 +28,7 @@ type Props = {
 export const PresenterWide: FC<Props> = ({
   handlePointClicked = () => {},
   sideNum,
-  startPoint = { x: 1, y: 1 },
+  fulcrumPoint = { x: 1, y: 1 },
   viewBoard,
   gameName = "",
   blackPlayer = "",
@@ -92,7 +92,7 @@ export const PresenterWide: FC<Props> = ({
           width={boardContainerWidth}
           viewBoard={viewBoard}
           sideNum={sideNum ? sideNum : viewBoard.length}
-          startPoint={startPoint}
+          fulcrumPoint={fulcrumPoint}
           onClickPoint={handlePointClicked}
           isGameInfoEditable={false}
           gameName={gameName}

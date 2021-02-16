@@ -12,11 +12,13 @@ const App: FC = () => {
       <Gennan
         sgf={sgf}
         path={path}
-        // startPoint={{ x: 9, y: 1 }}
+        // fulcrumPoint={{ x: 9, y: 1 }}
         // sideCount={9}
-        // usage="new"
+        usage="edit"
         onSgfChange={setSgf}
         onPathChange={setPath}
+        onSideCountChanged={(sc) => console.log(sc)}
+        onFulcrumPointChanged={(p) => console.log(p)}
       />
     </div>
   );

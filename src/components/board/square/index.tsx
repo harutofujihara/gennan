@@ -1,7 +1,7 @@
 import { ViewPointState, Color, PointState } from "gennan-core";
 import React, { FC } from "react";
 import { toCircled } from "../../../utils";
-import { PointPosition } from "../Board";
+import { PointPosition } from "../SvgBoard";
 import { Intersection } from "./Intersection";
 
 function trianglePoints(cx: number, cy: number, length: number): string {

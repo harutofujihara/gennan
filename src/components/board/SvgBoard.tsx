@@ -4,9 +4,9 @@ import { Square } from "./square";
 
 type Props = {
   className?: string;
-  width: number;
+  widthPx: number;
   viewBoard: ViewBoard;
-  startPoint: Point;
+  fulcrumPoint: Point;
   sideNum: number;
   onClickPoint: (point: Point) => void;
 };
@@ -24,11 +24,11 @@ export const PointPosition = {
 } as const;
 export type PointPosition = typeof PointPosition[keyof typeof PointPosition];
 
-export const Board: FC<Props> = ({
+export const SvgBoard: FC<Props> = ({
   viewBoard,
-  width,
+  widthPx,
   className,
-  startPoint,
+  fulcrumPoint,
   sideNum,
   onClickPoint,
 }: Props) => {
@@ -42,7 +42,7 @@ export const Board: FC<Props> = ({
   };
 
   useEffect(() => {
-    setSquareWidth(width / sideNum);
+    setSquareWidth(widthPx / sideNum);
   });
 
   const Squares = viewBoard
@@ -73,11 +73,11 @@ export const Board: FC<Props> = ({
         };
       });
     })
-    .filter((_, i) => startPoint.x - 1 <= i && i <= startPoint.x + sideNum) // x座標の拡大
+    .filter((_, i) => fulcrumPoint.x - 1 <= i && i <= fulcrumPoint.x + sideNum) // x座標の拡大
     .map(
       (v) =>
         v.filter(
-          (_, ii) => startPoint.y - 1 <= ii && ii <= startPoint.y + sideNum
+          (_, ii) => fulcrumPoint.y - 1 <= ii && ii <= fulcrumPoint.y + sideNum
         ) // y座標の拡大
     )
     .map((v, i) => {
@@ -107,6 +107,8 @@ export const Board: FC<Props> = ({
       version="1.1"
       baseProfile="full"
       xmlns="http://www.w3.org/2000/svg"
+      // width={`${widthPx}px`}
+      // height={`${widthPx}px`}
       width="100%"
       height="100%"
     >

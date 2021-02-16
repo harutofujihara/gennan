@@ -15,7 +15,7 @@ import {
   EditMoveMode,
   EditFixedStoneMode,
 } from "../types";
-import { useGennan } from "../hooks";
+import { useGennanCore } from "../hooks";
 import { PresenterWide } from "./PresentaterWide";
 import { Presenter } from "./Presenter";
 
@@ -30,7 +30,7 @@ import { Presenter } from "./Presenter";
 //   onPathChange?: (path: TreePath) => void;
 //   lang?: "ja" | "en";
 //   sideCount?: number;
-//   startPoint?: Point;
+//   fulcrumPoint?: Point;
 // };
 // export type Props = Others & RequireOne<Options>;
 
@@ -41,9 +41,11 @@ export type Props = {
   path?: Array<number>;
   onSgfChange?: (sgf: string) => void;
   onPathChange?: (path: TreePath) => void;
+  onSideCountChanged?: (sc: number) => void;
+  onFulcrumPointChanged?: (p: Point) => void;
   lang?: "ja" | "en";
   sideCount?: number;
-  startPoint?: Point;
+  fulcrumPoint?: Point;
 };
 
 export type EditModeInfo = {
@@ -60,8 +62,10 @@ export const Container: FC<Props> = ({
   path,
   onSgfChange,
   onPathChange,
-  startPoint = { x: 1, y: 1 },
-  sideCount,
+  onSideCountChanged,
+  onFulcrumPointChanged,
+  fulcrumPoint: fulcrumP = { x: 1, y: 1 },
+  sideCount: sideC,
 }: Props) => {
   console.log("Gennan is rendering!");
 
@@ -87,7 +91,7 @@ export const Container: FC<Props> = ({
       setBlackPlayer,
       setWhitePlayer,
     },
-  ] = useGennan({
+  ] = useGennanCore({
     initGnc,
     onSgfChange,
     onPathChange,
@@ -98,12 +102,13 @@ export const Container: FC<Props> = ({
 
   // 拡大用パラメータ
   // 始点から得られる最大の正方形 or 始点から与えられた幅の正方形
+  const [fulcrumPoint, setFulcrumPoint] = useState(fulcrumP);
   const minSide = Math.min(
-    gnc.viewBoard.length - startPoint.x + 1,
-    gnc.viewBoard.length - startPoint.y + 1
+    gnc.viewBoard.length - fulcrumPoint.x + 1,
+    gnc.viewBoard.length - fulcrumPoint.y + 1
   );
-  const sCount = sideCount || gnc.viewBoard.length;
-  const sideNum = minSide >= sCount ? sCount : minSide;
+  const sCount = sideC || gnc.viewBoard.length;
+  const [sideNum, setSideNum] = useState(minSide >= sCount ? sCount : minSide);
 
   // 編集モードの一覧と状態
   const editModeInfos: Array<EditModeInfo> = [];
@@ -305,10 +310,54 @@ export const Container: FC<Props> = ({
         isPlayIconActive={gnc.existsNextMove()}
         isTurnedPlayIconActive={gnc.existsBackMove()}
         sideNum={sideNum}
-        startPoint={startPoint}
+        fulcrumPoint={fulcrumPoint}
       />
     );
   } else {
+    const [isPreviewing, setIsPreviewing] = useState(false);
+    const [rangeSideNum, setRangeSideNum] = useState(sideNum);
+    const [rangeFulcrumPoint, setRangeFulcrumPoint] = useState(fulcrumPoint);
+    const [originalMode, setOriginalMode] = useState(mode);
+    const [originalSideNum, setOriginlSideNum] = useState(sideNum);
+    const [originalFulcrumPoint, setOriginalFulcrumPoint] = useState(
+      fulcrumPoint
+    );
+    const startSelectMagnification = () => {
+      setOriginalMode(mode);
+      setOriginlSideNum(sideNum);
+      setOriginalFulcrumPoint(fulcrumPoint);
+      setRangeSideNum(sideNum);
+      setRangeFulcrumPoint(fulcrumPoint);
+
+      setSideNum(gnc.viewBoard.length);
+      setFulcrumPoint({ x: 1, y: 1 });
+      setMode(Mode.EditMagnification);
+    };
+    const confirmMagnification = () => {
+      setSideNum(rangeSideNum);
+      setFulcrumPoint(rangeFulcrumPoint);
+      setMode(originalMode);
+      setIsPreviewing(false);
+
+      // コールバックを呼び出す
+      if (onSideCountChanged) onSideCountChanged(sideNum);
+      if (onFulcrumPointChanged) onFulcrumPointChanged(fulcrumPoint);
+    };
+    const cancelSelectMagnification = () => {
+      setMode(originalMode);
+      setSideNum(originalSideNum);
+      setFulcrumPoint(originalFulcrumPoint);
+    };
+    const previewMagnification = () => {
+      setSideNum(rangeSideNum);
+      setFulcrumPoint(rangeFulcrumPoint);
+      setIsPreviewing(true);
+    };
+    const cancelPreviewMagnification = () => {
+      setSideNum(gnc.viewBoard.length);
+      setFulcrumPoint({ x: 1, y: 1 });
+      setIsPreviewing(false);
+    };
     return (
       <Presenter
         mode={mode}
@@ -322,7 +371,7 @@ export const Container: FC<Props> = ({
         isPlayIconActive={gnc.existsNextMove()}
         isTurnedPlayIconActive={gnc.existsBackMove()}
         sideNum={sideNum}
-        startPoint={startPoint}
+        fulcrumPoint={fulcrumPoint}
         handleCommentChange={setComment}
         handleGameNameChange={setGameName}
         handleBlackPlayerChange={setBlackPlayer}
@@ -335,6 +384,15 @@ export const Container: FC<Props> = ({
           setMode(Mode.EditMoves);
           setEditMode(EditMoveMode.Move);
         }}
+        onClickObjectGroupIcon={startSelectMagnification}
+        rangeSideNum={rangeSideNum}
+        setRangeSideNum={setRangeSideNum}
+        rangeFulcrumPoint={rangeFulcrumPoint}
+        setRangeFulcrumPoint={setRangeFulcrumPoint}
+        previewMagnification={previewMagnification}
+        cancelPreviewMagnification={cancelPreviewMagnification}
+        isPreviewing={isPreviewing}
+        confirmMagnification={confirmMagnification}
       />
     );
   }

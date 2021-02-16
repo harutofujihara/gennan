@@ -1,27 +1,6 @@
 import React, { FC, useCallback, memo } from "react";
 import styled from "styled-components";
 
-interface StyleProps {
-  height: number;
-}
-const Container = styled.div`
-  background: rgba(0, 0, 0, 0.5);
-  width: 100%;
-  height: 100%;
-`;
-
-const FormWrapper = styled.div`
-  width: 80%;
-  height: 100px;
-  overflow-y: scroll;
-  margin: 0 auto;
-  height: ${(p: StyleProps) => `${p.height}px`};
-`;
-const Form = styled.form`
-  margin: 0 auto;
-  text-align: center;
-`;
-
 const StyledInput = styled.input`
   width: 100%;
   margin 10px auto;
@@ -53,8 +32,6 @@ const Input: FC<InputProps> = memo(
 );
 
 type Props = {
-  className?: string;
-  height: number;
   gameName: string;
   onGameNameChange: (v: string) => void;
   blackPlayer: string;
@@ -66,8 +43,6 @@ type Props = {
 
 export const GameInfoOverlay: FC<Props> = memo(
   ({
-    className,
-    height,
     gameName,
     onGameNameChange,
     blackPlayer,
@@ -77,9 +52,22 @@ export const GameInfoOverlay: FC<Props> = memo(
     isEditable,
   }: Props) => {
     return (
-      <Container className={className}>
-        <FormWrapper height={height}>
-          <Form>
+      <div
+        style={{
+          background: "rgba(0, 0, 0, 0.5)",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <div
+          style={{
+            width: "80%",
+            height: "100%",
+            overflowY: "scroll",
+            margin: "0 auto",
+          }}
+        >
+          <form style={{ margin: "0 auto", textAlign: "center" }}>
             <label>
               対局名
               <Input
@@ -104,9 +92,9 @@ export const GameInfoOverlay: FC<Props> = memo(
                 disabled={!isEditable}
               />
             </label>
-          </Form>
-        </FormWrapper>
-      </Container>
+          </form>
+        </div>
+      </div>
     );
   }
 );
