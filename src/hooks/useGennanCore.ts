@@ -49,7 +49,7 @@ type Operation = {
   setWhitePlayer: (wp: string) => void;
 };
 
-const useGennan = ({
+const useGennanCore = ({
   initGnc,
   onSgfChange,
   onPathChange,
@@ -201,4 +201,4 @@ const useGennan = ({
   ];
 };
 
-export { useGennan };
+export { useGennanCore };

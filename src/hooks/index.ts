@@ -1,2 +1,2 @@
 export * from "./useResizeObserver";
-export * from "./useGennan";
+export * from "./useGennanCore";

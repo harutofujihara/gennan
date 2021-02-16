@@ -1,10 +1,11 @@
 import React, { FC, useRef, useState, useEffect, ChangeEvent } from "react";
 import styled, { css } from "styled-components";
-import { GridNum, Point, ViewBoard, assertIsDefined } from "gennan-core";
+import { GridNum, Point, ViewBoard, assertIsDefined, Board } from "gennan-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   // faImage,
   // faCut,
+  faObjectGroup,
   faPlay,
   faInfoCircle,
   faUndo,
@@ -17,6 +18,10 @@ import {
   faCaretRight,
   faExpand,
   faCompress,
+  faPlusCircle,
+  faMinusCircle,
+  faSearchPlus,
+  faSearchMinus,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faSquare,
@@ -24,7 +29,7 @@ import {
   // faHandPaper,
 } from "@fortawesome/free-regular-svg-icons";
 import { useResizeObserver } from "../hooks/useResizeObserver";
-import { BoardContainer } from "./board/BoardContainer";
+import { BoardContainer, BoardContent } from "./board/BoardContainer";
 import {
   EditFixedStoneMode,
   EditMode,
@@ -34,6 +39,9 @@ import {
 } from "../types";
 import { splitArr } from "../utils";
 import { EditModeInfo } from "./Container";
+import { SvgBoard } from "./board/SvgBoard";
+import { GameInfoOverlay } from "./board/GameInfoOverlay";
+import { useDrag } from "react-use-gesture";
 
 const EditModeButton = styled.a`
   ${({
@@ -103,6 +111,7 @@ const FlatSimpleButton = styled.a`
   color: #333333;
   background: #ececec;
   transition: 0.4s;
+  cursor: pointer;
 
   &:hover {
     background: #808080;
@@ -149,12 +158,17 @@ const EditModeIcons: Array<{ el: JSX.Element; em: EditMode }> = [
   },
 ];
 
+const nums = [...Array(20)].map((_, i) => i + 1);
+const alphas = "abcdefghijklmnopqrstuvwxyz"
+  .split("")
+  .map((s) => s.toUpperCase());
+
 type Props = {
   mode: Mode;
   editModeInfos: Array<EditModeInfo>;
   gridNum?: GridNum;
-  sideNum?: number;
-  startPoint?: Point;
+  sideNum: number;
+  fulcrumPoint?: Point;
   viewBoard: ViewBoard;
   gameName?: string;
   blackPlayer?: string;
@@ -172,13 +186,24 @@ type Props = {
   onClickPlayIcon: () => void;
   onClickTurnedPlayIcon: () => void;
   onClickNextButton: () => void;
+  onClickObjectGroupIcon: () => void;
+  rangeSideNum: number;
+  setRangeSideNum: (n: number) => void;
+  rangeFulcrumPoint: Point;
+  setRangeFulcrumPoint: (p: Point) => void;
+  previewMagnification: () => void;
+  cancelPreviewMagnification: () => void;
+  isPreviewing: boolean;
+  confirmMagnification: () => void;
 };
 
 export const Presenter: FC<Props> = ({
   mode,
   editModeInfos,
   sideNum,
-  startPoint = { x: 1, y: 1 },
+
+  fulcrumPoint = { x: 1, y: 1 },
+
   viewBoard,
   gameName = "",
   blackPlayer = "",
@@ -196,19 +221,80 @@ export const Presenter: FC<Props> = ({
   onClickPlayIcon,
   onClickTurnedPlayIcon,
   onClickNextButton,
+  onClickObjectGroupIcon,
+  rangeSideNum,
+  rangeFulcrumPoint,
+  setRangeSideNum,
+  setRangeFulcrumPoint,
+  previewMagnification,
+  cancelPreviewMagnification,
+  isPreviewing,
+  confirmMagnification,
 }: Props) => {
   const ref = useRef(null);
-  const [containerWidth] = useResizeObserver(ref);
+  const [boardContainerWidthPx] = useResizeObserver(ref);
   const [isBoardOverlayVisible, setIsBoardOverlayVisible] = useState(false);
   const [isScaleVisible, setIsScaleVisible] = useState(false);
+
+  // const oneSquarePx = boardContainerWidthPx / (sideNum + 1);
+  const oneSquarePx = isScaleVisible
+    ? boardContainerWidthPx / (sideNum + 1)
+    : boardContainerWidthPx / sideNum;
+  // const boardWidthPx = isScaleVisible
+  //   ? oneSquarePx * sideNum
+  //   : boardContainerWidthPx;
+  const boardWidthPx = oneSquarePx * sideNum;
+
+  const VerticalScale: JSX.Element = (
+    <>
+      {alphas
+        .slice(fulcrumPoint.y - 1, fulcrumPoint.y - 1 + sideNum)
+        .map((a, i) => (
+          <span
+            key={i}
+            style={{
+              position: "absolute",
+              fontSize: oneSquarePx * 0.5 + "px",
+              top: (i + 1.5) * oneSquarePx + "px",
+              left: 0.5 * oneSquarePx + "px",
+              transform: "translate(-50%, -50%)",
+              userSelect: "none",
+            }}
+          >
+            {a}
+          </span>
+        ))}
+    </>
+  );
+  const HorizontalScale: JSX.Element = (
+    <>
+      {nums
+        .slice(fulcrumPoint.x - 1, fulcrumPoint.x - 1 + sideNum)
+        .map((a, i) => (
+          <span
+            key={i}
+            style={{
+              position: "absolute",
+              fontSize: oneSquarePx * 0.5 + "5px",
+              top: 0.5 * oneSquarePx + "px",
+              left: (i + 1.5) * oneSquarePx + "px",
+              transform: "translate(-50%, -50%)",
+              userSelect: "none",
+            }}
+          >
+            {a}
+          </span>
+        ))}
+    </>
+  );
 
   const EditModeButtons: Array<JSX.Element> = editModeInfos.map((info, i) => {
     const icon = EditModeIcons.find((emi) => emi.em === info.em);
     assertIsDefined(icon);
     return (
       <EditModeButton
-        width={containerWidth / 20}
-        border={containerWidth / 300}
+        width={boardContainerWidthPx / 20}
+        border={boardContainerWidthPx / 300}
         isActive={info.isActive}
         key={i}
         onClick={info.onClick}
@@ -218,70 +304,197 @@ export const Presenter: FC<Props> = ({
     );
   });
 
+  const rangeGridPx = oneSquarePx * rangeSideNum;
+
+  useEffect(() => {
+    setX(oneSquarePx * (rangeFulcrumPoint.x - 1));
+    setY(oneSquarePx * (rangeFulcrumPoint.y - 1));
+  }, [oneSquarePx]);
+
+  const [x, setX] = useState(oneSquarePx * (rangeFulcrumPoint.x - 1));
+  const [y, setY] = useState(oneSquarePx * (rangeFulcrumPoint.y - 1));
+  const bind = useDrag(
+    ({ down, offset: [ox, oy], movement: [mx, my] }) => {
+      setX(ox);
+      setY(oy);
+
+      if (!down) {
+        setRangeFulcrumPoint({
+          x: Math.floor(x / oneSquarePx + 1),
+          y: Math.floor(y / oneSquarePx + 1),
+        });
+      }
+    },
+    {
+      bounds: {
+        left: 0,
+        right: boardWidthPx - rangeGridPx,
+        top: 0,
+        bottom: boardWidthPx - rangeGridPx,
+      },
+    }
+  );
+  const expandMagnification = () => {
+    if (rangeSideNum < sideNum) {
+      setRangeSideNum(rangeSideNum + 1);
+
+      if (boardWidthPx < x + rangeGridPx + oneSquarePx) {
+        setX(x - oneSquarePx);
+        setRangeFulcrumPoint(
+          Object.assign(rangeFulcrumPoint, {
+            x: rangeFulcrumPoint.x - 1,
+          })
+        );
+      }
+
+      if (boardWidthPx < y + rangeGridPx + oneSquarePx) {
+        setY(y - oneSquarePx);
+        setRangeFulcrumPoint(
+          Object.assign(rangeFulcrumPoint, {
+            y: rangeFulcrumPoint.y - 1,
+          })
+        );
+      }
+      if (x <= oneSquarePx) setX(0);
+      if (y <= oneSquarePx) setY(0);
+    }
+  };
+  const shrinkMagnification = () => {
+    if (1 < rangeSideNum) setRangeSideNum(rangeSideNum - 1);
+  };
+
   return (
     <div ref={ref}>
       <div
         style={{
           textAlign: "center",
-          height: `${containerWidth / 5}px`,
+          height: `${boardContainerWidthPx / 5}px`,
           position: "relative",
         }}
       >
         <FontAwesomeIcon
+          icon={isScaleVisible ? faExpand : faCompress}
+          style={{
+            fontSize: `${boardContainerWidthPx / 24}px`,
+            position: "absolute",
+            left: boardContainerWidthPx * 0.01 + "px",
+            top: boardContainerWidthPx * 0.1 + "px",
+            cursor: "pointer",
+          }}
+          onClick={() => setIsScaleVisible(!isScaleVisible)}
+        />
+        <FontAwesomeIcon
           icon={faInfoCircle}
           style={{
-            fontSize: `${containerWidth / 9}px`,
+            fontSize: `${boardContainerWidthPx / 9}px`,
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%,-50%)",
+            cursor: "pointer",
           }}
           onClick={() => setIsBoardOverlayVisible(!isBoardOverlayVisible)}
         />
 
         <FontAwesomeIcon
-          icon={isScaleVisible ? faExpand : faCompress}
+          icon={faObjectGroup}
           style={{
-            fontSize: `${containerWidth / 24}px`,
+            fontSize: `${boardContainerWidthPx / 24}px`,
             position: "absolute",
-            left: containerWidth * 0.01 + "px",
-            top: containerWidth * 0.1 + "px",
+            top: boardContainerWidthPx * 0.1 + "px",
+            right: boardContainerWidthPx * 0.01 + "px",
+            cursor: "pointer",
+            opacity: mode === Mode.EditMagnification ? 0.5 : 1,
           }}
-          onClick={() => setIsScaleVisible(!isScaleVisible)}
+          onClick={() =>
+            mode !== Mode.EditMagnification && onClickObjectGroupIcon()
+          }
         />
       </div>
 
-      <BoardContainer
-        withScale={isScaleVisible}
-        gameName={gameName}
-        blackPlayer={blackPlayer}
-        whitePlayer={whitePlayer}
-        isOverlayVisible={isBoardOverlayVisible}
-        isGameInfoEditable={mode !== Mode.View}
-        width={containerWidth}
-        viewBoard={viewBoard}
-        sideNum={sideNum ? sideNum : viewBoard.length}
-        startPoint={startPoint}
-        onClickPoint={onClickPoint}
-        onGameNameChange={handleGameNameChange}
-        onBlackPlayerChange={handleBlackPlayerChange}
-        onWhitePlayerChange={handleWhitePlayerChange}
-      />
+      <BoardContainer widthPx={boardContainerWidthPx}>
+        {isScaleVisible && VerticalScale}
+        {isScaleVisible && HorizontalScale}
+        <BoardContent
+          style={{
+            width: boardWidthPx + "px",
+            height: boardWidthPx + "px",
+            bottom: 0,
+            right: 0,
+          }}
+        >
+          <SvgBoard
+            widthPx={boardWidthPx}
+            viewBoard={viewBoard}
+            fulcrumPoint={fulcrumPoint}
+            sideNum={sideNum ? sideNum : viewBoard.length}
+            onClickPoint={onClickPoint}
+          />
+        </BoardContent>
+        {isBoardOverlayVisible && (
+          <BoardContent
+            style={{
+              width: boardWidthPx + "px",
+              height: boardWidthPx + "px",
+              bottom: 0,
+              right: 0,
+            }}
+          >
+            <GameInfoOverlay
+              gameName={gameName}
+              blackPlayer={blackPlayer}
+              whitePlayer={whitePlayer}
+              onGameNameChange={handleGameNameChange}
+              onBlackPlayerChange={handleBlackPlayerChange}
+              onWhitePlayerChange={handleWhitePlayerChange}
+              isEditable={mode !== Mode.View}
+            />
+          </BoardContent>
+        )}
+
+        {mode === Mode.EditMagnification && !isPreviewing && (
+          <BoardContent
+            style={{
+              width: boardWidthPx + "px",
+              height: boardWidthPx + "px",
+              bottom: 0,
+              right: 0,
+            }}
+          >
+            <div
+              style={{
+                background: "rgba(0, 0, 0, 0.5)",
+                width: rangeGridPx + "px",
+                height: rangeGridPx + "px",
+                border: "2px dashed",
+                borderColor: "white",
+                position: "absolute",
+                left: x + "px",
+                top: y + "px",
+                boxSizing: "border-box",
+                cursor: "grab",
+              }}
+              {...bind()}
+            />
+          </BoardContent>
+        )}
+      </BoardContainer>
 
       <div
         style={{
-          padding: `${containerWidth / 50}px 0`,
+          padding: `${boardContainerWidthPx / 50}px 0`,
         }}
       >
         <textarea
-          disabled={mode === Mode.View}
+          disabled={mode === Mode.View || mode === Mode.EditMagnification}
           style={{
             width: "100%",
-            height: `${containerWidth / 7}px`,
+            height: `${boardContainerWidthPx / 7}px`,
             boxSizing: "border-box",
             padding: 0,
             margin: 0,
             overflow: "scroll",
+            resize: "none",
           }}
           maxLength={200}
           value={comment}
@@ -293,7 +506,7 @@ export const Presenter: FC<Props> = ({
 
       <div
         style={{
-          height: `${containerWidth / 8}px`,
+          height: `${boardContainerWidthPx / 8}px`,
           position: "relative",
         }}
       >
@@ -313,12 +526,14 @@ export const Presenter: FC<Props> = ({
 
         {mode === Mode.EditFixedStones && (
           <>
-            <p style={{ margin: 0, fontSize: `${containerWidth / 25}px` }}>
+            <p
+              style={{ margin: 0, fontSize: `${boardContainerWidthPx / 25}px` }}
+            >
               置石をセットしてください
             </p>
 
             <FlatSimpleButton
-              style={{ fontSize: `${containerWidth / 30}px` }}
+              style={{ fontSize: `${boardContainerWidthPx / 30}px` }}
               onClick={onClickNextButton}
             >
               置石を終了して手順に進む <FontAwesomeIcon icon={faCaretRight} />
@@ -330,10 +545,10 @@ export const Presenter: FC<Props> = ({
           <FontAwesomeIcon
             icon={faUndo}
             style={{
-              fontSize: `${containerWidth / 11}px`,
+              fontSize: `${boardContainerWidthPx / 11}px`,
               position: "absolute",
-              top: containerWidth / 60 + "px",
-              left: containerWidth / 18 + "px",
+              top: boardContainerWidthPx / 60 + "px",
+              left: boardContainerWidthPx / 18 + "px",
               userSelect: "none",
               opacity: isUndoIconActive ? 1 : 0.5,
             }}
@@ -347,9 +562,9 @@ export const Presenter: FC<Props> = ({
               icon={faPlay}
               rotation={180}
               style={{
-                fontSize: `${containerWidth / 9}px`,
+                fontSize: `${boardContainerWidthPx / 9}px`,
                 position: "absolute",
-                left: (15 / 40) * containerWidth + "px",
+                left: (15 / 40) * boardContainerWidthPx + "px",
                 userSelect: "none",
                 opacity: isTurnedPlayIconActive ? 1 : 0.5,
               }}
@@ -358,14 +573,82 @@ export const Presenter: FC<Props> = ({
             <FontAwesomeIcon
               icon={faPlay}
               style={{
-                fontSize: `${containerWidth / 9}px`,
+                fontSize: `${boardContainerWidthPx / 9}px`,
                 position: "absolute",
-                left: (16 / 30) * containerWidth + "px",
+                left: (16 / 30) * boardContainerWidthPx + "px",
                 userSelect: "none",
                 opacity: isPlayIconActive ? 1 : 0.5,
               }}
               onClick={onClickPlayIcon}
             />
+          </>
+        )}
+        {mode === Mode.EditMagnification && (
+          <>
+            <FontAwesomeIcon
+              icon={faSearchMinus}
+              style={{
+                fontSize: `${boardContainerWidthPx / 9}px`,
+                position: "absolute",
+                left: (2 / 40) * boardContainerWidthPx + "px",
+                userSelect: "none",
+                opacity: 1 < rangeSideNum && !isPreviewing ? 1 : 0.5,
+                cursor: "pointer",
+              }}
+              onClick={() => !isPreviewing && shrinkMagnification()}
+            />
+            <FontAwesomeIcon
+              icon={faSearchPlus}
+              style={{
+                fontSize: `${boardContainerWidthPx / 9}px`,
+                position: "absolute",
+                left: (8 / 40) * boardContainerWidthPx + "px",
+                userSelect: "none",
+                opacity: rangeSideNum < sideNum && !isPreviewing ? 1 : 0.5,
+                cursor: "pointer",
+              }}
+              onClick={() => !isPreviewing && expandMagnification()}
+            />
+            <div
+              style={{
+                position: "absolute",
+                right: 0,
+                bottom: 0,
+              }}
+            >
+              {!isPreviewing && (
+                <FlatSimpleButton
+                  style={{
+                    fontSize: `${boardContainerWidthPx / 30}px`,
+                    marginRight: "1rem",
+                  }}
+                  onClick={previewMagnification}
+                >
+                  Preview <FontAwesomeIcon icon={faCaretRight} />
+                </FlatSimpleButton>
+              )}
+              {isPreviewing && (
+                <FlatSimpleButton
+                  style={{
+                    fontSize: `${boardContainerWidthPx / 30}px`,
+                    marginRight: "1rem",
+                  }}
+                  onClick={cancelPreviewMagnification}
+                >
+                  Cancel <FontAwesomeIcon icon={faUndo} />
+                </FlatSimpleButton>
+              )}
+
+              <FlatSimpleButton
+                style={{
+                  fontSize: `${boardContainerWidthPx / 30}px`,
+                  opacity: isPreviewing ? 1 : 0.5,
+                }}
+                onClick={() => isPreviewing && confirmMagnification()}
+              >
+                Confirm
+              </FlatSimpleButton>
+            </div>
           </>
         )}
       </div>

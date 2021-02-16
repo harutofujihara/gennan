@@ -14,7 +14,8 @@ export const useResizeObserver = (
   const [height, setHeight] = useState(0);
 
   const handleResize = useCallback(
-    (entries: ResizeObserverEntry[]) => {
+    // (entries: ResizeObserverEntry[]) => {
+    (entries) => {
       if (!Array.isArray(entries)) {
         return;
       }
@@ -36,7 +37,7 @@ export const useResizeObserver = (
     }
 
     let RO: ResizeObserver | null = new ResizeObserver((entries) => {
-      handleResize(entries as ResizeObserverEntry[]);
+      handleResize(entries);
     });
     RO.observe(ref.current);
 
