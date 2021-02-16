@@ -8,7 +8,7 @@ const StyledInput = styled.input`
 
 type InputProps = {
   defaultValue: string;
-  onChange: (s: string) => void;
+  onChange?: (s: string) => void;
   disabled: boolean;
 };
 
@@ -16,7 +16,7 @@ const Input: FC<InputProps> = memo(
   ({ onChange, defaultValue, disabled }: InputProps) => {
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
-        onChange(e.target.value);
+        onChange && onChange(e.target.value);
       },
       []
     );
@@ -33,12 +33,12 @@ const Input: FC<InputProps> = memo(
 
 type Props = {
   gameName: string;
-  onGameNameChange: (v: string) => void;
+  onGameNameChange?: (v: string) => void;
   blackPlayer: string;
-  onBlackPlayerChange: (v: string) => void;
+  onBlackPlayerChange?: (v: string) => void;
   whitePlayer: string;
-  onWhitePlayerChange: (v: string) => void;
-  isEditable: boolean;
+  onWhitePlayerChange?: (v: string) => void;
+  isEditable?: boolean;
 };
 
 export const GameInfoOverlay: FC<Props> = memo(
@@ -49,7 +49,7 @@ export const GameInfoOverlay: FC<Props> = memo(
     onBlackPlayerChange,
     whitePlayer,
     onWhitePlayerChange,
-    isEditable,
+    isEditable = false,
   }: Props) => {
     return (
       <div

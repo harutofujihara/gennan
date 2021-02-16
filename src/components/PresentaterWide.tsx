@@ -8,12 +8,14 @@ import {
   faExpand,
 } from "@fortawesome/free-solid-svg-icons";
 import { useResizeObserver } from "../hooks/useResizeObserver";
-import { BoardContainer } from "./board/BoardContainer";
+import { BoardContainer, BoardContent } from "./board/BoardContainer";
+import { SvgBoard } from "./board/SvgBoard";
+import { GameInfoOverlay } from "./board/GameInfoOverlay";
 
 type Props = {
   handlePointClicked?: (p: Point) => void;
-  sideNum?: number;
-  fulcrumPoint?: Point;
+  sideNum: number;
+  fulcrumPoint: Point;
   viewBoard: ViewBoard;
   gameName?: string;
   blackPlayer?: string;
@@ -24,6 +26,11 @@ type Props = {
   isPlayIconActive?: boolean;
   isTurnedPlayIconActive?: boolean;
 };
+
+const nums = [...Array(20)].map((_, i) => i + 1);
+const alphas = "abcdefghijklmnopqrstuvwxyz"
+  .split("")
+  .map((s) => s.toUpperCase());
 
 export const PresenterWide: FC<Props> = ({
   handlePointClicked = () => {},
@@ -41,12 +48,59 @@ export const PresenterWide: FC<Props> = ({
 }: Props) => {
   const ref = useRef(null);
   const [containerWidth] = useResizeObserver(ref);
-  const boardContainerWidth = containerWidth * 0.7;
+  const boardContainerWidthPx = containerWidth * 0.7;
   const [isBoardOverlayVisible, setIsBoardOverlayVisible] = useState(false);
   const [isScaleVisible, setIsScaleVisible] = useState(false);
+  const oneSquarePx = isScaleVisible
+    ? boardContainerWidthPx / (sideNum + 1)
+    : boardContainerWidthPx / sideNum;
+  const boardWidthPx = oneSquarePx * sideNum;
+
+  const VerticalScale: JSX.Element = (
+    <>
+      {alphas
+        .slice(fulcrumPoint.y - 1, fulcrumPoint.y - 1 + sideNum)
+        .map((a, i) => (
+          <span
+            key={i}
+            style={{
+              position: "absolute",
+              fontSize: oneSquarePx * 0.5 + "px",
+              top: (i + 1.5) * oneSquarePx + "px",
+              left: 0.5 * oneSquarePx + "px",
+              transform: "translate(-50%, -50%)",
+              userSelect: "none",
+            }}
+          >
+            {a}
+          </span>
+        ))}
+    </>
+  );
+  const HorizontalScale: JSX.Element = (
+    <>
+      {nums
+        .slice(fulcrumPoint.x - 1, fulcrumPoint.x - 1 + sideNum)
+        .map((a, i) => (
+          <span
+            key={i}
+            style={{
+              position: "absolute",
+              fontSize: oneSquarePx * 0.5 + "5px",
+              top: 0.5 * oneSquarePx + "px",
+              left: (i + 1.5) * oneSquarePx + "px",
+              transform: "translate(-50%, -50%)",
+              userSelect: "none",
+            }}
+          >
+            {a}
+          </span>
+        ))}
+    </>
+  );
 
   return (
-    <div ref={ref} style={{ height: boardContainerWidth + "px" }}>
+    <div ref={ref} style={{ height: boardContainerWidthPx + "px" }}>
       <div style={{ position: "relative" }}>
         <FontAwesomeIcon
           icon={faInfoCircle}
@@ -55,6 +109,7 @@ export const PresenterWide: FC<Props> = ({
             position: "absolute",
             right: containerWidth * 0.15 + "px",
             transform: "translateX(50%)",
+            cursor: "pointer",
           }}
           onClick={() => setIsBoardOverlayVisible(!isBoardOverlayVisible)}
         />
@@ -67,6 +122,7 @@ export const PresenterWide: FC<Props> = ({
             right: containerWidth * 0.05 + "px",
             top: containerWidth * 0.05 + "px",
             transform: "translateX(50%)",
+            cursor: "pointer",
           }}
           onClick={() => setIsScaleVisible(!isScaleVisible)}
         />
@@ -86,19 +142,42 @@ export const PresenterWide: FC<Props> = ({
           {comment}
         </p>
 
-        <BoardContainer
-          withScale={isScaleVisible}
-          isOverlayVisible={isBoardOverlayVisible}
-          width={boardContainerWidth}
-          viewBoard={viewBoard}
-          sideNum={sideNum ? sideNum : viewBoard.length}
-          fulcrumPoint={fulcrumPoint}
-          onClickPoint={handlePointClicked}
-          isGameInfoEditable={false}
-          gameName={gameName}
-          blackPlayer={blackPlayer}
-          whitePlayer={whitePlayer}
-        />
+        <BoardContainer widthPx={boardContainerWidthPx}>
+          {isScaleVisible && VerticalScale}
+          {isScaleVisible && HorizontalScale}
+          <BoardContent
+            style={{
+              width: boardWidthPx + "px",
+              height: boardWidthPx + "px",
+              bottom: 0,
+              right: 0,
+            }}
+          >
+            <SvgBoard
+              widthPx={boardWidthPx}
+              viewBoard={viewBoard}
+              fulcrumPoint={fulcrumPoint}
+              sideNum={sideNum ? sideNum : viewBoard.length}
+              onClickPoint={handlePointClicked}
+            />
+          </BoardContent>
+          {isBoardOverlayVisible && (
+            <BoardContent
+              style={{
+                width: boardWidthPx + "px",
+                height: boardWidthPx + "px",
+                bottom: 0,
+                right: 0,
+              }}
+            >
+              <GameInfoOverlay
+                gameName={gameName}
+                blackPlayer={blackPlayer}
+                whitePlayer={whitePlayer}
+              />
+            </BoardContent>
+          )}
+        </BoardContainer>
 
         <FontAwesomeIcon
           icon={faPlay}
@@ -110,6 +189,7 @@ export const PresenterWide: FC<Props> = ({
             right: containerWidth * 0.17 + "px",
             userSelect: "none",
             opacity: isTurnedPlayIconActive ? 1 : 0.5,
+            cursor: "pointer",
           }}
           onClick={onTurnedPlayIconClicked}
         />
@@ -122,6 +202,7 @@ export const PresenterWide: FC<Props> = ({
             right: containerWidth * 0.05 + "px",
             userSelect: "none",
             opacity: isPlayIconActive ? 1 : 0.5,
+            cursor: "pointer",
           }}
           onClick={onPlayIconClicked}
         />

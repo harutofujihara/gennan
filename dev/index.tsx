@@ -14,7 +14,7 @@ const App: FC = () => {
         path={path}
         // fulcrumPoint={{ x: 9, y: 1 }}
         // sideCount={9}
-        usage="edit"
+        usage="viewWide"
         onSgfChange={setSgf}
         onPathChange={setPath}
         onSideCountChanged={(sc) => console.log(sc)}
