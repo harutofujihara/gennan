@@ -474,6 +474,7 @@ export const Presenter: FC<Props> = ({
                 top: y + "px",
                 boxSizing: "border-box",
                 cursor: "grab",
+                touchAction: "none",
               }}
               {...bind()}
             />
