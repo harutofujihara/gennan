@@ -1,6 +1,6 @@
 import { ViewPointState, Color, PointState } from "gennan-core";
 import React, { FC } from "react";
-import { toCircled } from "../../../utils";
+import { toCircled } from "../../../utils/utils";
 import { PointPosition } from "../SvgBoard";
 import { Intersection } from "./Intersection";
 

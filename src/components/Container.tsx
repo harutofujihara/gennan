@@ -18,6 +18,8 @@ import {
 import { useGennanCore } from "../hooks";
 import { PresenterWide } from "./PresentaterWide";
 import { Presenter } from "./Presenter";
+import { parseGennanCodeToParams } from "../utils/gennanCode/parser";
+import { stringifyGennanCode } from "../utils/gennanCode/stringifier";
 
 // type Options = {
 //   sgf?: string;
@@ -38,7 +40,7 @@ export type Props = {
   sgf?: string;
   gridNum?: GridNum;
   usage?: "view" | "viewWide" | "new" | "edit";
-  path?: Array<number>;
+  initPath?: Array<number>;
   onSgfChange?: (sgf: string) => void;
   onPathChange?: (path: TreePath) => void;
   onSideCountChanged?: (sc: number) => void;
@@ -46,6 +48,8 @@ export type Props = {
   lang?: "ja" | "en";
   sideCount?: number;
   fulcrumPoint?: Point;
+  gennanCode?: string;
+  onGennanCodeChanged?: (gncd: string) => void;
 };
 
 export type EditModeInfo = {
@@ -57,21 +61,36 @@ export type EditModeInfo = {
 export const Container: FC<Props> = ({
   lang = "ja",
   usage = "view",
-  sgf,
+  sgf: s,
   gridNum: gn = 19,
-  path,
+  initPath: ip,
   onSgfChange,
   onPathChange,
   onSideCountChanged,
   onFulcrumPointChanged,
-  fulcrumPoint: fulcrumP = { x: 1, y: 1 },
-  sideCount: sideC,
+  fulcrumPoint: fp = { x: 1, y: 1 },
+  sideCount: sc,
+  gennanCode,
+  onGennanCodeChanged,
 }: Props) => {
-  console.log("Gennan is rendering!");
+  // console.log("Gennan is rendering!");
+
+  // gennanCodeが与えられていたらそちらを優先する
+  let sgf = s;
+  let initPath = ip;
+  let sideC = sc;
+  let fulcrumP = fp;
+  if (gennanCode) {
+    const params = parseGennanCodeToParams(gennanCode);
+    if (params.sgf != null) sgf = params.sgf;
+    if (params.initPath != null) initPath = params.initPath;
+    if (params.sideCount != null) sideC = params.sideCount;
+    if (params.fulcrumPoint != null) fulcrumP = params.fulcrumPoint;
+  }
 
   const initGnc = sgf ? GennanCore.createFromSgf(sgf) : GennanCore.create(gn);
 
-  if (path != null) initGnc.playToPath(path);
+  if (initPath != null) initGnc.setFromInitPath(initPath);
   const [
     gnc,
     {
@@ -294,6 +313,17 @@ export const Container: FC<Props> = ({
         break;
     }
   }, []);
+  if (onGennanCodeChanged != null) {
+    useEffect(() => {
+      onGennanCodeChanged(
+        stringifyGennanCode({
+          gnc,
+          sideCount: sideNum,
+          fulcrumPoint,
+        })
+      );
+    }, [gnc]);
+  }
 
   // render
   if (usage === "viewWide") {
@@ -342,6 +372,14 @@ export const Container: FC<Props> = ({
       // コールバックを呼び出す
       if (onSideCountChanged) onSideCountChanged(sideNum);
       if (onFulcrumPointChanged) onFulcrumPointChanged(fulcrumPoint);
+      if (onGennanCodeChanged)
+        onGennanCodeChanged(
+          stringifyGennanCode({
+            gnc,
+            sideCount: sideNum,
+            fulcrumPoint,
+          })
+        );
     };
     const cancelSelectMagnification = () => {
       setMode(originalMode);
