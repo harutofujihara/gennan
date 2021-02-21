@@ -36,10 +36,12 @@ import { stringifyGennanCode } from "../utils/gennanCode/stringifier";
 // };
 // export type Props = Others & RequireOne<Options>;
 
+export type Usage = "view" | "viewWide" | "new" | "edit";
+
 export type Props = {
   sgf?: string;
   gridNum?: GridNum;
-  usage?: "view" | "viewWide" | "new" | "edit";
+  usage?: Usage;
   initPath?: Array<number>;
   onSgfChange?: (sgf: string) => void;
   onPathChange?: (path: TreePath) => void;
