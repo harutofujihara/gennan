@@ -14,6 +14,7 @@ import {
   MarkupMode,
   EditMoveMode,
   EditFixedStoneMode,
+  Usage,
 } from "../types";
 import { useGennanCore } from "../hooks";
 import { PresenterWide } from "./PresentaterWide";
@@ -35,8 +36,6 @@ import { stringifyGennanCode } from "../utils/gennanCode/stringifier";
 //   fulcrumPoint?: Point;
 // };
 // export type Props = Others & RequireOne<Options>;
-
-export type Usage = "view" | "viewWide" | "new" | "edit";
 
 export type Props = {
   sgf?: string;
