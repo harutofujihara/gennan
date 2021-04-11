@@ -1,6 +1,13 @@
 import React, { FC, useRef, useState, useEffect, ChangeEvent } from "react";
 import styled, { css } from "styled-components";
-import { GridNum, Point, ViewBoard, assertIsDefined, Board } from "gennan-core";
+import {
+  GridNum,
+  Point,
+  ViewBoard,
+  assertIsDefined,
+  Board,
+  cloneNode,
+} from "gennan-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   // faImage,
@@ -245,7 +252,6 @@ export const Presenter: FC<Props> = ({
   //   ? oneSquarePx * sideNum
   //   : boardContainerWidthPx;
   const boardWidthPx = oneSquarePx * sideNum;
-
   const VerticalScale: JSX.Element = (
     <>
       {alphas
@@ -276,7 +282,7 @@ export const Presenter: FC<Props> = ({
             key={i}
             style={{
               position: "absolute",
-              fontSize: oneSquarePx * 0.5 + "5px",
+              fontSize: oneSquarePx * 0.5 + "px",
               top: 0.5 * oneSquarePx + "px",
               left: (i + 1.5) * oneSquarePx + "px",
               transform: "translate(-50%, -50%)",
