@@ -497,20 +497,23 @@ export const Presenter: FC<Props> = ({
           disabled={mode === Mode.View || mode === Mode.EditMagnification}
           style={{
             width: "100%",
-            height: `${boardContainerWidthPx / 7}px`,
+            height: `${boardContainerWidthPx / 6}px`,
             boxSizing: "border-box",
             padding: 0,
             margin: 0,
             overflow: "scroll",
             resize: "none",
+            fontSize: `${boardContainerWidthPx / 24}px`,
           }}
           maxLength={200}
           value={comment}
-          onInput={(e: ChangeEvent<HTMLTextAreaElement>) =>
-            handleCommentChange(e.target.value)
-          }
+          onInput={(e: ChangeEvent<HTMLTextAreaElement>) => {
+            // console.log(e.target.value.match(/[^\n]/));
+            handleCommentChange(e.target.value);
+          }}
         />
       </div>
+      {comment}
 
       <div
         style={{

@@ -20,7 +20,7 @@ const App: FC = () => {
         onPathChange={setPath}
         onSideCountChanged={(sc) => console.log(sc)}
         onFulcrumPointChanged={(p) => console.log(p)}
-        onGennanCodeChanged={(c) => console.log(c)}
+        // onGennanCodeChanged={(c) => console.log(c)}
       />
     </div>
   );
