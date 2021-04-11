@@ -44,7 +44,7 @@ import {
   MarkupMode,
   Mode,
 } from "../types";
-import { splitArr } from "../utils/utils";
+import { commentValidate splitArr } from "../utils/utils";
 import { EditModeInfo } from "./Container";
 import { SvgBoard } from "./board/SvgBoard";
 import { GameInfoOverlay } from "./board/GameInfoOverlay";
@@ -370,6 +370,8 @@ export const Presenter: FC<Props> = ({
     if (1 < rangeSideNum) setRangeSideNum(rangeSideNum - 1);
   };
 
+  const [isCommentValid, setIsCommentValid] = useState(true);
+
   return (
     <div ref={ref}>
       <div
@@ -499,7 +501,6 @@ export const Presenter: FC<Props> = ({
             width: "100%",
             height: `${boardContainerWidthPx / 6}px`,
             boxSizing: "border-box",
-            padding: 0,
             margin: 0,
             overflow: "scroll",
             resize: "none",
@@ -507,10 +508,25 @@ export const Presenter: FC<Props> = ({
           }}
           maxLength={200}
           value={comment}
-          onInput={(e: ChangeEvent<HTMLTextAreaElement>) =>
-            handleCommentChange(e.target.value)
-          }
+          onInput={(e: ChangeEvent<HTMLTextAreaElement>) => {
+            if (commentValidate(e.target.value)) {
+              handleCommentChange(e.target.value);
+              setIsCommentValid(true);
+            } else setIsCommentValid(false);
+            // handleCommentChange(e.target.value.replace(/(?:\[)/g, `\\[`));
+          }}
         />
+        {!isCommentValid && (
+          <p
+            style={{
+              margin: 0,
+              color: "red",
+              fontSize: `${boardContainerWidthPx / 26}px`,
+            }}
+          >
+            The following characters are not allowed.()[]
+          </p>
+        )}
       </div>
 
       <div
