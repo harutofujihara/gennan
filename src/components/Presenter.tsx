@@ -512,7 +512,6 @@ export const Presenter: FC<Props> = ({
           }
         />
       </div>
-      {comment}
 
       <div
         style={{
