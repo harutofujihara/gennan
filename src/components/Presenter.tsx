@@ -327,8 +327,8 @@ export const Presenter: FC<Props> = ({
 
       if (!down) {
         setRangeFulcrumPoint({
-          x: Math.floor(x / oneSquarePx + 1),
-          y: Math.floor(y / oneSquarePx + 1),
+          x: Math.floor(x / (oneSquarePx - 0.01) + 1),
+          y: Math.floor(y / (oneSquarePx - 0.01) + 1),
         });
       }
     },
