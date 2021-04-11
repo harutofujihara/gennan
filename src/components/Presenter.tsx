@@ -507,10 +507,9 @@ export const Presenter: FC<Props> = ({
           }}
           maxLength={200}
           value={comment}
-          onInput={(e: ChangeEvent<HTMLTextAreaElement>) => {
-            // console.log(e.target.value.match(/[^\n]/));
-            handleCommentChange(e.target.value);
-          }}
+          onInput={(e: ChangeEvent<HTMLTextAreaElement>) =>
+            handleCommentChange(e.target.value)
+          }
         />
       </div>
       {comment}

@@ -170,8 +170,6 @@ const useGennanCore = ({
     dispatch({ type: "SET_GAME_NAME", gameName });
   };
   const setComment = (comment: string): void => {
-    // console.log(comment.replace(/r?n$/g, "!!!"));
-
     dispatch({ type: "SET_COMMENT", comment });
   };
   const setBlackPlayer = (blackPlayer: string): void => {
