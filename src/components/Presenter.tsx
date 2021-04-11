@@ -44,7 +44,7 @@ import {
   MarkupMode,
   Mode,
 } from "../types";
-import { commentValidate splitArr } from "../utils/utils";
+import { commentValidate, splitArr } from "../utils/utils";
 import { EditModeInfo } from "./Container";
 import { SvgBoard } from "./board/SvgBoard";
 import { GameInfoOverlay } from "./board/GameInfoOverlay";
