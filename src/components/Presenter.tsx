@@ -524,7 +524,7 @@ export const Presenter: FC<Props> = ({
               fontSize: `${boardContainerWidthPx / 26}px`,
             }}
           >
-            The following characters are not allowed.()[]
+            The following characters are not allowed.()[],
           </p>
         )}
       </div>

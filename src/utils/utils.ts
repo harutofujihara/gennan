@@ -32,7 +32,13 @@ const splitArr = <T>(array: Array<T>, n: number) =>
   );
 
 const commentValidate = (s: string) => {
-  return !(s.match(/\[/) || s.match(/]/) || s.match(/\(/) || s.match(/\)/));
+  return !(
+    s.match(/\[/) ||
+    s.match(/]/) ||
+    s.match(/\(/) ||
+    s.match(/\)/) ||
+    s.match(/,/)
+  );
   // return s.trim().length == 0 || s.match(/^[0-9a-zA-Z\n\r.,?\x20\u3000]+$/);
 };
 export { toCircled, splitArr, commentValidate };
