@@ -51,6 +51,7 @@ export type Props = {
   fulcrumPoint?: Point;
   gennanCode?: string;
   onGennanCodeChanged?: (gncd: string) => void;
+  isScaleVisible?: boolean;
 };
 
 export type EditModeInfo = {
@@ -73,6 +74,7 @@ export const Container: FC<Props> = ({
   sideCount: sc,
   gennanCode,
   onGennanCodeChanged,
+  isScaleVisible = false,
 }: Props) => {
   // console.log("Gennan is rendering!");
 
@@ -330,6 +332,7 @@ export const Container: FC<Props> = ({
   if (usage === "viewWide") {
     return (
       <PresenterWide
+        isScaleVisible={isScaleVisible}
         viewBoard={gnc.viewBoard}
         handlePointClicked={handlePointClicked}
         gameName={gnc.gameName}
@@ -399,6 +402,7 @@ export const Container: FC<Props> = ({
     };
     return (
       <Presenter
+        isScaleVisible={isScaleVisible}
         mode={mode}
         editModeInfos={editModeInfos}
         viewBoard={gnc.viewBoard}

@@ -55,7 +55,7 @@
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@types/resize-observer-browser": "^0.1.5",
     "@types/styled-components": "^5.1.7",
-    "gennan-core": "^1.0.25",
+    "gennan-core": "^1.0.26",
     "react-error-boundary": "^3.1.0",
     "react-use-gesture": "^9.0.2",
     "styled-components": "^5.2.1"
