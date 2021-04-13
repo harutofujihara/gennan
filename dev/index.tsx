@@ -18,6 +18,7 @@ const App: FC = () => {
         // sideCount={9}
         usage="edit"
         onSgfChange={setSgf}
+        // onSnapshotSgfChange={(s) => console.log(s)}
         onPathChange={setPath}
         onSideCountChanged={(sc) => console.log(sc)}
         onFulcrumPointChanged={(p) => console.log(p)}

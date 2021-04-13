@@ -11,6 +11,7 @@ import { useEffect, useReducer } from "react";
 type Args = {
   initGnc: GennanCore;
   onSgfChange?: (sgf: string) => void;
+  onSnapshotSgfChange?: (sgf: string) => void;
   onPathChange?: (path: TreePath) => void;
 };
 
@@ -52,6 +53,7 @@ type Operation = {
 const useGennanCore = ({
   initGnc,
   onSgfChange,
+  onSnapshotSgfChange,
   onPathChange,
 }: Args): [GennanCore, Operation] => {
   // reducer
@@ -123,6 +125,11 @@ const useGennanCore = ({
     useEffect(() => {
       onSgfChange(gnc.sgf);
     }, [gnc.sgf, onSgfChange]);
+  }
+  if (onSnapshotSgfChange != null) {
+    useEffect(() => {
+      onSnapshotSgfChange(gnc.snapshotSgf);
+    }, [gnc.snapshotSgf, onSnapshotSgfChange]);
   }
   if (onPathChange != null) {
     useEffect(() => {

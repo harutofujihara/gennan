@@ -43,6 +43,7 @@ export type Props = {
   usage?: Usage;
   initPath?: Array<number>;
   onSgfChange?: (sgf: string) => void;
+  onSnapshotSgfChange?: (sgf: string) => void;
   onPathChange?: (path: TreePath) => void;
   onSideCountChanged?: (sc: number) => void;
   onFulcrumPointChanged?: (p: Point) => void;
@@ -67,6 +68,7 @@ export const Container: FC<Props> = ({
   gridNum: gn = 19,
   initPath: ip,
   onSgfChange,
+  onSnapshotSgfChange,
   onPathChange,
   onSideCountChanged,
   onFulcrumPointChanged,
@@ -116,6 +118,7 @@ export const Container: FC<Props> = ({
   ] = useGennanCore({
     initGnc,
     onSgfChange,
+    onSnapshotSgfChange,
     onPathChange,
   });
 
