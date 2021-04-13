@@ -203,6 +203,7 @@ type Props = {
   cancelPreviewMagnification: () => void;
   isPreviewing: boolean;
   confirmMagnification: () => void;
+  isScaleVisible?: boolean;
 };
 
 export const Presenter: FC<Props> = ({
@@ -238,11 +239,11 @@ export const Presenter: FC<Props> = ({
   cancelPreviewMagnification,
   isPreviewing,
   confirmMagnification,
+  isScaleVisible = false,
 }: Props) => {
   const ref = useRef(null);
   const [boardContainerWidthPx] = useResizeObserver(ref);
   const [isBoardOverlayVisible, setIsBoardOverlayVisible] = useState(false);
-  const [isScaleVisible, setIsScaleVisible] = useState(false);
 
   // const oneSquarePx = boardContainerWidthPx / (sideNum + 1);
   const oneSquarePx = isScaleVisible
@@ -381,17 +382,6 @@ export const Presenter: FC<Props> = ({
           position: "relative",
         }}
       >
-        <FontAwesomeIcon
-          icon={isScaleVisible ? faExpand : faCompress}
-          style={{
-            fontSize: `${boardContainerWidthPx / 24}px`,
-            position: "absolute",
-            left: boardContainerWidthPx * 0.01 + "px",
-            top: boardContainerWidthPx * 0.1 + "px",
-            cursor: "pointer",
-          }}
-          onClick={() => setIsScaleVisible(!isScaleVisible)}
-        />
         <FontAwesomeIcon
           icon={faInfoCircle}
           style={{

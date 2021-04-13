@@ -25,6 +25,7 @@ type Props = {
   onTurnedPlayIconClicked?: () => void;
   isPlayIconActive?: boolean;
   isTurnedPlayIconActive?: boolean;
+  isScaleVisible?: boolean;
 };
 
 const nums = [...Array(20)].map((_, i) => i + 1);
@@ -45,12 +46,12 @@ export const PresenterWide: FC<Props> = ({
   onTurnedPlayIconClicked,
   isPlayIconActive = true,
   isTurnedPlayIconActive = false,
+  isScaleVisible = false,
 }: Props) => {
   const ref = useRef(null);
   const [containerWidth] = useResizeObserver(ref);
   const boardContainerWidthPx = containerWidth * 0.7;
   const [isBoardOverlayVisible, setIsBoardOverlayVisible] = useState(false);
-  const [isScaleVisible, setIsScaleVisible] = useState(false);
   const oneSquarePx = isScaleVisible
     ? boardContainerWidthPx / (sideNum + 1)
     : boardContainerWidthPx / sideNum;
@@ -112,19 +113,6 @@ export const PresenterWide: FC<Props> = ({
             cursor: "pointer",
           }}
           onClick={() => setIsBoardOverlayVisible(!isBoardOverlayVisible)}
-        />
-
-        <FontAwesomeIcon
-          icon={isScaleVisible ? faExpand : faCompress}
-          style={{
-            fontSize: `${containerWidth / 35}px`,
-            position: "absolute",
-            right: containerWidth * 0.05 + "px",
-            top: containerWidth * 0.05 + "px",
-            transform: "translateX(50%)",
-            cursor: "pointer",
-          }}
-          onClick={() => setIsScaleVisible(!isScaleVisible)}
         />
 
         <p
