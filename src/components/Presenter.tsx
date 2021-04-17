@@ -758,7 +758,7 @@ export const Presenter: FC<Props> = ({
                 style={{ fontSize: `${boardContainerWidthPx / 30}px` }}
                 onClick={onClickNextButton}
               >
-                Record game next <FontAwesomeIcon icon={faCaretRight} />
+                Record game context next <FontAwesomeIcon icon={faCaretRight} />
               </FlatSimpleButton>
             </>
           )}
