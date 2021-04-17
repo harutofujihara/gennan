@@ -70,6 +70,7 @@ export type Props = {
   fulcrumPoint?: Point;
   gennanCode?: string;
   onGennanCodeChanged?: (gncd: string) => void;
+  bg?: string;
 };
 
 export type EditModeInfo = {
@@ -92,6 +93,7 @@ export const Container: FC<Props> = ({
   sideCount: sc,
   gennanCode,
   onGennanCodeChanged,
+  bg,
 }: Props) => {
   // console.log("Gennan is rendering!");
 
@@ -372,6 +374,7 @@ export const Container: FC<Props> = ({
         isTurnedPlayIconActive={gnc.existsBackMove()}
         sideNum={sideNum}
         fulcrumPoint={fulcrumPoint}
+        bg={bg}
       />
     );
   } else {
@@ -468,6 +471,7 @@ export const Container: FC<Props> = ({
         isPreviewing={isPreviewing}
         confirmMagnification={confirmMagnification}
         takeSnapshot={onTakeSnapshot}
+        bg={bg}
       />
     );
   }

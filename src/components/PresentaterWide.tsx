@@ -11,7 +11,7 @@ import { useResizeObserver } from "../hooks/useResizeObserver";
 import { BoardContainer, BoardContent } from "./board/BoardContainer";
 import { SvgBoard } from "./board/SvgBoard";
 import { GameInfoOverlay } from "./board/GameInfoOverlay";
-import { Flex, Spacer } from "@chakra-ui/layout";
+import { Box, Flex, Spacer } from "@chakra-ui/layout";
 import { IconButton } from "@chakra-ui/button";
 import { FaCompress, FaExpand, FaInfoCircle } from "react-icons/fa";
 
@@ -30,6 +30,7 @@ type Props = {
   isTurnedPlayIconActive?: boolean;
   isScaleVisible?: boolean;
   toggleIsScaleVisible: any;
+  bg?: string;
 };
 
 const nums = [...Array(20)].map((_, i) => i + 1);
@@ -52,6 +53,7 @@ export const PresenterWide: FC<Props> = ({
   isTurnedPlayIconActive = false,
   isScaleVisible = false,
   toggleIsScaleVisible,
+  bg,
 }: Props) => {
   const ref = useRef(null);
   const [containerWidth] = useResizeObserver(ref);
@@ -109,7 +111,11 @@ export const PresenterWide: FC<Props> = ({
   const isLargerThanMd = boardContainerWidthPx > 480 ? true : false;
 
   return (
-    <div ref={ref} style={{ height: boardContainerWidthPx + "px" }}>
+    <Box
+      ref={ref}
+      style={{ height: boardContainerWidthPx + "px" }}
+      bg={bg ? bg : "white"}
+    >
       <div style={{ position: "relative" }}>
         {/* <FontAwesomeIcon
           icon={faInfoCircle}
@@ -132,14 +138,14 @@ export const PresenterWide: FC<Props> = ({
           <Spacer />
 
           <IconButton
-            bg="white"
+            bg={bg ? bg : "white"}
             size={isLargerThanMd ? "md" : "sm"}
             aria-label="download sgf"
             icon={<FaInfoCircle />}
             onClick={() => setIsBoardOverlayVisible(!isBoardOverlayVisible)}
           />
           <IconButton
-            bg="white"
+            bg={bg ? bg : "white"}
             ml="1"
             size={isLargerThanMd ? "md" : "sm"}
             aria-label="download sgf"
@@ -228,6 +234,6 @@ export const PresenterWide: FC<Props> = ({
           onClick={onPlayIconClicked}
         />
       </div>
-    </div>
+    </Box>
   );
 };

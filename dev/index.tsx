@@ -22,6 +22,7 @@ const App: FC = () => {
         onSideCountChanged={(sc) => console.log(sc)}
         onFulcrumPointChanged={(p) => console.log(p)}
         onGennanCodeChanged={(c) => console.log(c)}
+        bg="gray.50"
       />
     </div>
   );

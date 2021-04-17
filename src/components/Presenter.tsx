@@ -16,6 +16,10 @@ import {
   useBreakpointValue,
   Center,
   Textarea,
+  BackgroundProps,
+  Box,
+  BreadcrumbLinkProps,
+  ColorProps,
 } from "@chakra-ui/react";
 import styled, { css } from "styled-components";
 import {
@@ -284,15 +288,14 @@ type Props = {
   isScaleVisible?: boolean;
   toggleIsScaleVisible: any;
   takeSnapshot: () => void;
+  bg?: string;
 };
 
 export const Presenter: FC<Props> = ({
   mode,
   editModeInfos,
   sideNum,
-
   fulcrumPoint = { x: 1, y: 1 },
-
   viewBoard,
   gameName = "",
   blackPlayer = "",
@@ -323,6 +326,7 @@ export const Presenter: FC<Props> = ({
   isScaleVisible = false,
   toggleIsScaleVisible,
   takeSnapshot,
+  bg,
 }: Props) => {
   const ref = useRef(null);
   const [boardContainerWidthPx] = useResizeObserver(ref);
@@ -477,18 +481,18 @@ export const Presenter: FC<Props> = ({
         confirm={takeSnapshot}
         cancelRef={cancelTakeSnapshotDialogRef}
       />
-      <div ref={ref}>
+      <Box ref={ref} bg={bg ? bg : "white"}>
         {mode !== Mode.EditMagnification && (
           <Flex>
             <IconButton
-              bg="white"
+              bg={bg ? bg : "white"}
               size={isLargerThanMd ? "md" : "sm"}
               aria-label="download sgf"
               icon={<FaInfoCircle />}
               onClick={() => setIsBoardOverlayVisible(!isBoardOverlayVisible)}
             />
             <IconButton
-              bg="white"
+              bg={bg ? bg : "white"}
               ml="1"
               size={isLargerThanMd ? "md" : "sm"}
               aria-label="download sgf"
@@ -498,20 +502,20 @@ export const Presenter: FC<Props> = ({
 
             <Spacer />
             <IconButton
-              bg="white"
+              bg={bg ? bg : "white"}
               size={isLargerThanMd ? "md" : "sm"}
               aria-label="import sgf"
               icon={<FaFileImport />}
             />
             <IconButton
-              bg="white"
+              bg={bg ? bg : "white"}
               ml="1"
               size={isLargerThanMd ? "md" : "sm"}
               aria-label="download sgf"
               icon={<DownloadIcon />}
             />
             <IconButton
-              bg="white"
+              bg={bg ? bg : "white"}
               ml="1"
               size={isLargerThanMd ? "md" : "sm"}
               aria-label="take snapshot"
@@ -519,7 +523,7 @@ export const Presenter: FC<Props> = ({
               onClick={onOpenTakeSnapshotDialog}
             />
             <IconButton
-              bg="white"
+              bg={bg ? bg : "white"}
               ml="1"
               size={isLargerThanMd ? "md" : "sm"}
               aria-label="download sgf"
@@ -559,7 +563,7 @@ export const Presenter: FC<Props> = ({
             </Center>
             <Spacer />
             <IconButton
-              bg="white"
+              bg={bg ? bg : "white"}
               ml="1"
               size={isLargerThanMd ? "md" : "sm"}
               aria-label="shrink maginification"
@@ -568,7 +572,7 @@ export const Presenter: FC<Props> = ({
               disabled={1 >= rangeSideNum || isPreviewing}
             />
             <IconButton
-              bg="white"
+              bg={bg ? bg : "white"}
               ml="1"
               size={isLargerThanMd ? "md" : "sm"}
               aria-label="expand maginification"
@@ -809,7 +813,7 @@ export const Presenter: FC<Props> = ({
             </>
           )}
         </div>
-      </div>
+      </Box>
     </>
   );
 };
