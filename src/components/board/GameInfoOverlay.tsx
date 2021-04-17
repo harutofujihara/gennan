@@ -68,30 +68,24 @@ export const GameInfoOverlay: FC<Props> = memo(
           }}
         >
           <form style={{ margin: "0 auto", textAlign: "center" }}>
-            <label>
-              対局名
-              <Input
-                defaultValue={gameName}
-                onChange={onGameNameChange}
-                disabled={!isEditable}
-              />
-            </label>
-            <label>
-              黒番
-              <Input
-                defaultValue={blackPlayer}
-                onChange={onBlackPlayerChange}
-                disabled={!isEditable}
-              />
-            </label>
-            <label>
-              白番
-              <Input
-                defaultValue={whitePlayer}
-                onChange={onWhitePlayerChange}
-                disabled={!isEditable}
-              />
-            </label>
+            <label style={{ color: "white" }}>Game name</label>
+            <Input
+              defaultValue={gameName}
+              onChange={onGameNameChange}
+              disabled={!isEditable}
+            />
+            <label style={{ color: "white" }}>Black player</label>
+            <Input
+              defaultValue={blackPlayer}
+              onChange={onBlackPlayerChange}
+              disabled={!isEditable}
+            />
+            <label style={{ color: "white" }}>White player</label>
+            <Input
+              defaultValue={whitePlayer}
+              onChange={onWhitePlayerChange}
+              disabled={!isEditable}
+            />
           </form>
         </div>
       </div>

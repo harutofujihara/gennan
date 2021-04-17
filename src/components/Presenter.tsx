@@ -1,4 +1,22 @@
 import React, { FC, useRef, useState, useEffect, ChangeEvent } from "react";
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  useDisclosure,
+  AlertDialogCloseButton,
+  Button,
+  Divider,
+  Flex,
+  IconButton,
+  Spacer,
+  useBreakpointValue,
+  Center,
+  Textarea,
+} from "@chakra-ui/react";
 import styled, { css } from "styled-components";
 import {
   GridNum,
@@ -49,6 +67,18 @@ import { EditModeInfo } from "./Container";
 import { SvgBoard } from "./board/SvgBoard";
 import { GameInfoOverlay } from "./board/GameInfoOverlay";
 import { useDrag } from "react-use-gesture";
+import { ArrowBackIcon, ArrowLeftIcon, DownloadIcon } from "@chakra-ui/icons";
+import {
+  FaCheck,
+  FaCircle,
+  FaCompress,
+  FaExpand,
+  FaFileImport,
+  FaInfoCircle,
+  FaSearchMinus,
+  FaSearchPlus,
+  FaStop,
+} from "react-icons/fa";
 
 const EditModeButton = styled.a`
   ${({
@@ -127,6 +157,53 @@ const FlatSimpleButton = styled.a`
   }
 `;
 
+const ConfirmDialog = ({
+  cancelRef,
+  isOpen,
+  onClose,
+  title,
+  description,
+  confirm,
+}: {
+  cancelRef: any;
+  isOpen: any;
+  onClose: any;
+  title: any;
+  description: any;
+  confirm: any;
+}) => {
+  const onConfirmClick = () => {
+    confirm();
+    onClose();
+  };
+
+  return (
+    <AlertDialog
+      motionPreset="slideInBottom"
+      leastDestructiveRef={cancelRef}
+      onClose={onClose}
+      isOpen={isOpen}
+      isCentered
+    >
+      <AlertDialogOverlay />
+
+      <AlertDialogContent>
+        <AlertDialogHeader>{title}</AlertDialogHeader>
+        <AlertDialogCloseButton />
+        <AlertDialogBody>{description}</AlertDialogBody>
+        <AlertDialogFooter>
+          <Button ref={cancelRef} onClick={onClose}>
+            No
+          </Button>
+          <Button colorScheme="teal" ml={3} onClick={onConfirmClick}>
+            Yes
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+
 const EditModeIcons: Array<{ el: JSX.Element; em: EditMode }> = [
   {
     el: <FontAwesomeIcon icon={faCircle} />,
@@ -194,7 +271,8 @@ type Props = {
   onClickPlayIcon: () => void;
   onClickTurnedPlayIcon: () => void;
   onClickNextButton: () => void;
-  onClickObjectGroupIcon: () => void;
+  startSelectMagnification: () => void;
+  cancelSelectMagnification: () => void;
   rangeSideNum: number;
   setRangeSideNum: (n: number) => void;
   rangeFulcrumPoint: Point;
@@ -204,6 +282,8 @@ type Props = {
   isPreviewing: boolean;
   confirmMagnification: () => void;
   isScaleVisible?: boolean;
+  toggleIsScaleVisible: any;
+  takeSnapshot: () => void;
 };
 
 export const Presenter: FC<Props> = ({
@@ -230,7 +310,8 @@ export const Presenter: FC<Props> = ({
   onClickPlayIcon,
   onClickTurnedPlayIcon,
   onClickNextButton,
-  onClickObjectGroupIcon,
+  startSelectMagnification,
+  cancelSelectMagnification,
   rangeSideNum,
   rangeFulcrumPoint,
   setRangeSideNum,
@@ -240,10 +321,15 @@ export const Presenter: FC<Props> = ({
   isPreviewing,
   confirmMagnification,
   isScaleVisible = false,
+  toggleIsScaleVisible,
+  takeSnapshot,
 }: Props) => {
   const ref = useRef(null);
   const [boardContainerWidthPx] = useResizeObserver(ref);
   const [isBoardOverlayVisible, setIsBoardOverlayVisible] = useState(false);
+
+  // responsive
+  const isLargerThanMd = boardContainerWidthPx > 480 ? true : false;
 
   // const oneSquarePx = boardContainerWidthPx / (sideNum + 1);
   const oneSquarePx = isScaleVisible
@@ -373,9 +459,127 @@ export const Presenter: FC<Props> = ({
 
   const [isCommentValid, setIsCommentValid] = useState(true);
 
+  // confirm
+  const {
+    isOpen: isOpenTakeSnapshotDialog,
+    onOpen: onOpenTakeSnapshotDialog,
+    onClose: onCloseTakeSnapshotDialog,
+  } = useDisclosure();
+  const cancelTakeSnapshotDialogRef = useRef(null);
+
   return (
-    <div ref={ref}>
-      <div
+    <>
+      <ConfirmDialog
+        title="Take snapshot?"
+        description="Are you sure you want to take snapshot of the board? The current context will be deleted."
+        isOpen={isOpenTakeSnapshotDialog}
+        onClose={onCloseTakeSnapshotDialog}
+        confirm={takeSnapshot}
+        cancelRef={cancelTakeSnapshotDialogRef}
+      />
+      <div ref={ref}>
+        {mode !== Mode.EditMagnification && (
+          <Flex>
+            <IconButton
+              bg="white"
+              size={isLargerThanMd ? "md" : "sm"}
+              aria-label="download sgf"
+              icon={<FaInfoCircle />}
+              onClick={() => setIsBoardOverlayVisible(!isBoardOverlayVisible)}
+            />
+            <IconButton
+              bg="white"
+              ml="1"
+              size={isLargerThanMd ? "md" : "sm"}
+              aria-label="download sgf"
+              icon={isScaleVisible ? <FaExpand /> : <FaCompress />}
+              onClick={toggleIsScaleVisible}
+            />
+
+            <Spacer />
+            <IconButton
+              bg="white"
+              size={isLargerThanMd ? "md" : "sm"}
+              aria-label="import sgf"
+              icon={<FaFileImport />}
+            />
+            <IconButton
+              bg="white"
+              ml="1"
+              size={isLargerThanMd ? "md" : "sm"}
+              aria-label="download sgf"
+              icon={<DownloadIcon />}
+            />
+            <IconButton
+              bg="white"
+              ml="1"
+              size={isLargerThanMd ? "md" : "sm"}
+              aria-label="take snapshot"
+              icon={<FaStop />}
+              onClick={onOpenTakeSnapshotDialog}
+            />
+            <IconButton
+              bg="white"
+              ml="1"
+              size={isLargerThanMd ? "md" : "sm"}
+              aria-label="download sgf"
+              icon={<FaSearchPlus />}
+              onClick={startSelectMagnification}
+            />
+          </Flex>
+        )}
+
+        {mode === Mode.EditMagnification && (
+          <Flex>
+            <Center>
+              <Button
+                size="xs"
+                leftIcon={<ArrowBackIcon />}
+                onClick={
+                  isPreviewing
+                    ? () => cancelPreviewMagnification()
+                    : () => cancelSelectMagnification()
+                }
+              >
+                Cancel
+              </Button>
+              <Button
+                leftIcon={<FaCheck />}
+                size="xs"
+                ml="3"
+                colorScheme={isPreviewing ? "blue" : "teal"}
+                onClick={
+                  isPreviewing
+                    ? () => confirmMagnification()
+                    : () => previewMagnification()
+                }
+              >
+                {isPreviewing ? "Confirm" : "Preview"}
+              </Button>
+            </Center>
+            <Spacer />
+            <IconButton
+              bg="white"
+              ml="1"
+              size={isLargerThanMd ? "md" : "sm"}
+              aria-label="shrink maginification"
+              icon={<FaSearchMinus />}
+              onClick={() => !isPreviewing && shrinkMagnification()}
+              disabled={1 >= rangeSideNum || isPreviewing}
+            />
+            <IconButton
+              bg="white"
+              ml="1"
+              size={isLargerThanMd ? "md" : "sm"}
+              aria-label="expand maginification"
+              icon={<FaSearchPlus />}
+              disabled={rangeSideNum >= sideNum || isPreviewing}
+              onClick={() => !isPreviewing && expandMagnification()}
+            />
+          </Flex>
+        )}
+        <Divider mb="0.8rem" />
+        {/* <div
         style={{
           textAlign: "center",
           height: `${boardContainerWidthPx / 5}px`,
@@ -405,32 +609,13 @@ export const Presenter: FC<Props> = ({
             cursor: "pointer",
             opacity: mode === Mode.EditMagnification ? 0.5 : 1,
           }}
-          onClick={() =>
-            mode !== Mode.EditMagnification && onClickObjectGroupIcon()
-          }
+          onClick={startSelectMagnification}
         />
-      </div>
+      </div> */}
 
-      <BoardContainer widthPx={boardContainerWidthPx}>
-        {isScaleVisible && VerticalScale}
-        {isScaleVisible && HorizontalScale}
-        <BoardContent
-          style={{
-            width: boardWidthPx + "px",
-            height: boardWidthPx + "px",
-            bottom: 0,
-            right: 0,
-          }}
-        >
-          <SvgBoard
-            widthPx={boardWidthPx}
-            viewBoard={viewBoard}
-            fulcrumPoint={fulcrumPoint}
-            sideNum={sideNum ? sideNum : viewBoard.length}
-            onClickPoint={onClickPoint}
-          />
-        </BoardContent>
-        {isBoardOverlayVisible && (
+        <BoardContainer widthPx={boardContainerWidthPx}>
+          {isScaleVisible && VerticalScale}
+          {isScaleVisible && HorizontalScale}
           <BoardContent
             style={{
               width: boardWidthPx + "px",
@@ -439,237 +624,192 @@ export const Presenter: FC<Props> = ({
               right: 0,
             }}
           >
-            <GameInfoOverlay
-              gameName={gameName}
-              blackPlayer={blackPlayer}
-              whitePlayer={whitePlayer}
-              onGameNameChange={handleGameNameChange}
-              onBlackPlayerChange={handleBlackPlayerChange}
-              onWhitePlayerChange={handleWhitePlayerChange}
-              isEditable={mode !== Mode.View}
+            <SvgBoard
+              widthPx={boardWidthPx}
+              viewBoard={viewBoard}
+              fulcrumPoint={fulcrumPoint}
+              sideNum={sideNum ? sideNum : viewBoard.length}
+              onClickPoint={onClickPoint}
             />
           </BoardContent>
-        )}
-
-        {mode === Mode.EditMagnification && !isPreviewing && (
-          <BoardContent
-            style={{
-              width: boardWidthPx + "px",
-              height: boardWidthPx + "px",
-              bottom: 0,
-              right: 0,
-            }}
-          >
-            <div
+          {isBoardOverlayVisible && (
+            <BoardContent
               style={{
-                background: "rgba(0, 0, 0, 0.5)",
-                width: rangeGridPx + "px",
-                height: rangeGridPx + "px",
-                border: "2px dashed",
-                borderColor: "white",
-                position: "absolute",
-                left: x + "px",
-                top: y + "px",
-                boxSizing: "border-box",
-                cursor: "grab",
-                touchAction: "none",
+                width: boardWidthPx + "px",
+                height: boardWidthPx + "px",
+                bottom: 0,
+                right: 0,
               }}
-              {...bind()}
-            />
-          </BoardContent>
-        )}
-      </BoardContainer>
+            >
+              <GameInfoOverlay
+                gameName={gameName}
+                blackPlayer={blackPlayer}
+                whitePlayer={whitePlayer}
+                onGameNameChange={handleGameNameChange}
+                onBlackPlayerChange={handleBlackPlayerChange}
+                onWhitePlayerChange={handleWhitePlayerChange}
+                isEditable={mode !== Mode.View}
+              />
+            </BoardContent>
+          )}
 
-      <div
-        style={{
-          padding: `${boardContainerWidthPx / 50}px 0`,
-        }}
-      >
-        <textarea
-          disabled={mode === Mode.View || mode === Mode.EditMagnification}
-          style={{
-            width: "100%",
-            height: `${boardContainerWidthPx / 6}px`,
-            boxSizing: "border-box",
-            margin: 0,
-            overflow: "scroll",
-            resize: "none",
-            fontSize: `${boardContainerWidthPx / 24}px`,
-          }}
-          maxLength={200}
-          value={comment}
-          onInput={(e: ChangeEvent<HTMLTextAreaElement>) => {
-            if (commentValidate(e.target.value)) {
-              handleCommentChange(e.target.value);
-              setIsCommentValid(true);
-            } else setIsCommentValid(false);
-            // handleCommentChange(e.target.value.replace(/(?:\[)/g, `\\[`));
-          }}
-        />
-        {!isCommentValid && (
-          <p
-            style={{
-              margin: 0,
-              color: "red",
-              fontSize: `${boardContainerWidthPx / 26}px`,
-            }}
-          >
-            The following characters are not allowed.()[],
-          </p>
-        )}
-      </div>
+          {mode === Mode.EditMagnification && !isPreviewing && (
+            <BoardContent
+              style={{
+                width: boardWidthPx + "px",
+                height: boardWidthPx + "px",
+                bottom: 0,
+                right: 0,
+              }}
+            >
+              <div
+                style={{
+                  background: "rgba(0, 0, 0, 0.5)",
+                  width: rangeGridPx + "px",
+                  height: rangeGridPx + "px",
+                  border: "2px dashed",
+                  borderColor: "white",
+                  position: "absolute",
+                  left: x + "px",
+                  top: y + "px",
+                  boxSizing: "border-box",
+                  cursor: "grab",
+                  touchAction: "none",
+                }}
+                {...bind()}
+              />
+            </BoardContent>
+          )}
+        </BoardContainer>
 
-      <div
-        style={{
-          height: `${boardContainerWidthPx / 8}px`,
-          position: "relative",
-        }}
-      >
         <div
           style={{
-            position: "absolute",
-            top: "0",
-            right: "0",
+            padding: `${boardContainerWidthPx / 50}px 0`,
           }}
         >
-          {splitArr(EditModeButtons, 4).map((ems, i) => (
-            <p style={{ margin: 0, lineHeight: 0 }} key={i}>
-              {Array.isArray(ems) && ems.map((em) => em)}
+          <Textarea
+            disabled={mode === Mode.View || mode === Mode.EditMagnification}
+            display="block"
+            overflow="scroll"
+            boxSizing="border-box"
+            p="5px 15px"
+            bgColor="white"
+            border="1px solid #b6c3c6"
+            borderRadius="4px"
+            color="inherit"
+            letterSpacing="inherit"
+            style={{ font: "inherit" }}
+            value={comment}
+            resize="none"
+            onInput={(e: ChangeEvent<HTMLTextAreaElement>) => {
+              if (commentValidate(e.target.value)) {
+                handleCommentChange(e.target.value);
+                setIsCommentValid(true);
+              } else setIsCommentValid(false);
+              // handleCommentChange(e.target.value.replace(/(?:\[)/g, `\\[`));
+            }}
+          />
+
+          {!isCommentValid && (
+            <p
+              style={{
+                margin: 0,
+                color: "red",
+                fontSize: `${boardContainerWidthPx / 26}px`,
+              }}
+            >
+              The following characters are not allowed.()[],
             </p>
-          ))}
+          )}
         </div>
 
-        {mode === Mode.EditFixedStones && (
-          <>
-            <p
-              style={{ margin: 0, fontSize: `${boardContainerWidthPx / 25}px` }}
-            >
-              置石をセットしてください
-            </p>
-
-            <FlatSimpleButton
-              style={{ fontSize: `${boardContainerWidthPx / 30}px` }}
-              onClick={onClickNextButton}
-            >
-              置石を終了して手順に進む <FontAwesomeIcon icon={faCaretRight} />
-            </FlatSimpleButton>
-          </>
-        )}
-
-        {mode === Mode.EditMoves && (
-          <FontAwesomeIcon
-            icon={faUndo}
+        <div
+          style={{
+            height: `${boardContainerWidthPx / 8}px`,
+            position: "relative",
+          }}
+        >
+          <div
             style={{
-              fontSize: `${boardContainerWidthPx / 11}px`,
               position: "absolute",
-              top: boardContainerWidthPx / 60 + "px",
-              left: boardContainerWidthPx / 18 + "px",
-              userSelect: "none",
-              opacity: isUndoIconActive ? 1 : 0.5,
-              cursor: "pointer",
+              top: "0",
+              right: "0",
             }}
-            onClick={onClickUndoIcon}
-          />
-        )}
+          >
+            {splitArr(EditModeButtons, 4).map((ems, i) => (
+              <p style={{ margin: 0, lineHeight: 0 }} key={i}>
+                {Array.isArray(ems) && ems.map((em) => em)}
+              </p>
+            ))}
+          </div>
 
-        {(mode === Mode.View || mode === Mode.EditMoves) && (
-          <>
-            <FontAwesomeIcon
-              icon={faPlay}
-              rotation={180}
-              style={{
-                fontSize: `${boardContainerWidthPx / 9}px`,
-                position: "absolute",
-                left: (15 / 40) * boardContainerWidthPx + "px",
-                userSelect: "none",
-                opacity: isTurnedPlayIconActive ? 1 : 0.5,
-                cursor: "pointer",
-              }}
-              onClick={onClickTurnedPlayIcon}
-            />
-            <FontAwesomeIcon
-              icon={faPlay}
-              style={{
-                fontSize: `${boardContainerWidthPx / 9}px`,
-                position: "absolute",
-                left: (16 / 30) * boardContainerWidthPx + "px",
-                userSelect: "none",
-                opacity: isPlayIconActive ? 1 : 0.5,
-                cursor: "pointer",
-              }}
-              onClick={onClickPlayIcon}
-            />
-          </>
-        )}
-        {mode === Mode.EditMagnification && (
-          <>
-            <FontAwesomeIcon
-              icon={faSearchMinus}
-              style={{
-                fontSize: `${boardContainerWidthPx / 9}px`,
-                position: "absolute",
-                left: (2 / 40) * boardContainerWidthPx + "px",
-                userSelect: "none",
-                opacity: 1 < rangeSideNum && !isPreviewing ? 1 : 0.5,
-                cursor: "pointer",
-              }}
-              onClick={() => !isPreviewing && shrinkMagnification()}
-            />
-            <FontAwesomeIcon
-              icon={faSearchPlus}
-              style={{
-                fontSize: `${boardContainerWidthPx / 9}px`,
-                position: "absolute",
-                left: (8 / 40) * boardContainerWidthPx + "px",
-                userSelect: "none",
-                opacity: rangeSideNum < sideNum && !isPreviewing ? 1 : 0.5,
-                cursor: "pointer",
-              }}
-              onClick={() => !isPreviewing && expandMagnification()}
-            />
-            <div
-              style={{
-                position: "absolute",
-                right: 0,
-                bottom: 0,
-              }}
-            >
-              {!isPreviewing && (
-                <FlatSimpleButton
-                  style={{
-                    fontSize: `${boardContainerWidthPx / 30}px`,
-                    marginRight: "1rem",
-                  }}
-                  onClick={previewMagnification}
-                >
-                  Preview <FontAwesomeIcon icon={faCaretRight} />
-                </FlatSimpleButton>
-              )}
-              {isPreviewing && (
-                <FlatSimpleButton
-                  style={{
-                    fontSize: `${boardContainerWidthPx / 30}px`,
-                    marginRight: "1rem",
-                  }}
-                  onClick={cancelPreviewMagnification}
-                >
-                  Cancel <FontAwesomeIcon icon={faUndo} />
-                </FlatSimpleButton>
-              )}
+          {mode === Mode.EditFixedStones && (
+            <>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: `${boardContainerWidthPx / 25}px`,
+                }}
+              >
+                Set handicap stones
+              </p>
 
               <FlatSimpleButton
-                style={{
-                  fontSize: `${boardContainerWidthPx / 30}px`,
-                  opacity: isPreviewing ? 1 : 0.5,
-                }}
-                onClick={() => isPreviewing && confirmMagnification()}
+                style={{ fontSize: `${boardContainerWidthPx / 30}px` }}
+                onClick={onClickNextButton}
               >
-                Confirm
+                Record game context next <FontAwesomeIcon icon={faCaretRight} />
               </FlatSimpleButton>
-            </div>
-          </>
-        )}
+            </>
+          )}
+
+          {mode === Mode.EditMoves && (
+            <FontAwesomeIcon
+              icon={faUndo}
+              style={{
+                fontSize: `${boardContainerWidthPx / 11}px`,
+                position: "absolute",
+                top: boardContainerWidthPx / 60 + "px",
+                left: boardContainerWidthPx / 18 + "px",
+                userSelect: "none",
+                opacity: isUndoIconActive ? 1 : 0.5,
+                cursor: "pointer",
+              }}
+              onClick={onClickUndoIcon}
+            />
+          )}
+
+          {(mode === Mode.View || mode === Mode.EditMoves) && (
+            <>
+              <FontAwesomeIcon
+                icon={faPlay}
+                rotation={180}
+                style={{
+                  fontSize: `${boardContainerWidthPx / 9}px`,
+                  position: "absolute",
+                  left: (15 / 40) * boardContainerWidthPx + "px",
+                  userSelect: "none",
+                  opacity: isTurnedPlayIconActive ? 1 : 0.5,
+                  cursor: "pointer",
+                }}
+                onClick={onClickTurnedPlayIcon}
+              />
+              <FontAwesomeIcon
+                icon={faPlay}
+                style={{
+                  fontSize: `${boardContainerWidthPx / 9}px`,
+                  position: "absolute",
+                  left: (16 / 30) * boardContainerWidthPx + "px",
+                  userSelect: "none",
+                  opacity: isPlayIconActive ? 1 : 0.5,
+                  cursor: "pointer",
+                }}
+                onClick={onClickPlayIcon}
+              />
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };

@@ -1,4 +1,21 @@
 import React, { FC, useState, useEffect } from "react";
+import { FaSearchPlus, FaStop } from "react-icons/fa";
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  useDisclosure,
+  AlertDialogCloseButton,
+  Button,
+  Divider,
+  Flex,
+  IconButton,
+  Spacer,
+  useBoolean,
+} from "@chakra-ui/react";
 import {
   GennanCore,
   Color,
@@ -21,6 +38,8 @@ import { PresenterWide } from "./PresentaterWide";
 import { Presenter } from "./Presenter";
 import { parseGennanCodeToParams } from "../utils/gennanCode/parser";
 import { stringifyGennanCode } from "../utils/gennanCode/stringifier";
+import { DownloadIcon } from "@chakra-ui/icons";
+import { useToggle } from "react-use";
 
 // type Options = {
 //   sgf?: string;
@@ -43,7 +62,6 @@ export type Props = {
   usage?: Usage;
   initPath?: Array<number>;
   onSgfChange?: (sgf: string) => void;
-  onSnapshotSgfChange?: (sgf: string) => void;
   onPathChange?: (path: TreePath) => void;
   onSideCountChanged?: (sc: number) => void;
   onFulcrumPointChanged?: (p: Point) => void;
@@ -52,7 +70,6 @@ export type Props = {
   fulcrumPoint?: Point;
   gennanCode?: string;
   onGennanCodeChanged?: (gncd: string) => void;
-  isScaleVisible?: boolean;
 };
 
 export type EditModeInfo = {
@@ -68,7 +85,6 @@ export const Container: FC<Props> = ({
   gridNum: gn = 19,
   initPath: ip,
   onSgfChange,
-  onSnapshotSgfChange,
   onPathChange,
   onSideCountChanged,
   onFulcrumPointChanged,
@@ -76,7 +92,6 @@ export const Container: FC<Props> = ({
   sideCount: sc,
   gennanCode,
   onGennanCodeChanged,
-  isScaleVisible = false,
 }: Props) => {
   // console.log("Gennan is rendering!");
 
@@ -114,11 +129,11 @@ export const Container: FC<Props> = ({
       setComment,
       setBlackPlayer,
       setWhitePlayer,
+      takeSnapshot,
     },
   ] = useGennanCore({
     initGnc,
     onSgfChange,
-    onSnapshotSgfChange,
     onPathChange,
   });
 
@@ -331,11 +346,20 @@ export const Container: FC<Props> = ({
     }, [gnc]);
   }
 
+  const [isScaleVisible, toggleIsScaleVisible] = useToggle(false);
+
+  const onTakeSnapshot = () => {
+    takeSnapshot();
+    setMode(Mode.EditFixedStones);
+    setEditMode(EditFixedStoneMode.Black);
+  };
+
   // render
   if (usage === "viewWide") {
     return (
       <PresenterWide
         isScaleVisible={isScaleVisible}
+        toggleIsScaleVisible={toggleIsScaleVisible}
         viewBoard={gnc.viewBoard}
         handlePointClicked={handlePointClicked}
         gameName={gnc.gameName}
@@ -360,6 +384,8 @@ export const Container: FC<Props> = ({
       fulcrumPoint
     );
     const startSelectMagnification = () => {
+      if (mode === Mode.EditMagnification) return;
+
       setOriginalMode(mode);
       setOriginlSideNum(sideNum);
       setOriginalFulcrumPoint(fulcrumPoint);
@@ -406,6 +432,7 @@ export const Container: FC<Props> = ({
     return (
       <Presenter
         isScaleVisible={isScaleVisible}
+        toggleIsScaleVisible={toggleIsScaleVisible}
         mode={mode}
         editModeInfos={editModeInfos}
         viewBoard={gnc.viewBoard}
@@ -430,7 +457,8 @@ export const Container: FC<Props> = ({
           setMode(Mode.EditMoves);
           setEditMode(EditMoveMode.Move);
         }}
-        onClickObjectGroupIcon={startSelectMagnification}
+        startSelectMagnification={startSelectMagnification}
+        cancelSelectMagnification={cancelSelectMagnification}
         rangeSideNum={rangeSideNum}
         setRangeSideNum={setRangeSideNum}
         rangeFulcrumPoint={rangeFulcrumPoint}
@@ -439,6 +467,7 @@ export const Container: FC<Props> = ({
         cancelPreviewMagnification={cancelPreviewMagnification}
         isPreviewing={isPreviewing}
         confirmMagnification={confirmMagnification}
+        takeSnapshot={onTakeSnapshot}
       />
     );
   }

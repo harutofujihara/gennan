@@ -18,14 +18,11 @@ const App: FC = () => {
         // sideCount={9}
         usage="edit"
         onSgfChange={setSgf}
-        // onSnapshotSgfChange={(s) => console.log(s)}
         onPathChange={setPath}
         onSideCountChanged={(sc) => console.log(sc)}
         onFulcrumPointChanged={(p) => console.log(p)}
         onGennanCodeChanged={(c) => console.log(c)}
-        isScaleVisible={isScaleVisible}
       />
-      <button onClick={() => setIsScaleVisible(!isScaleVisible)}>scale</button>
     </div>
   );
 };

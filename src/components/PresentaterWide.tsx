@@ -11,6 +11,9 @@ import { useResizeObserver } from "../hooks/useResizeObserver";
 import { BoardContainer, BoardContent } from "./board/BoardContainer";
 import { SvgBoard } from "./board/SvgBoard";
 import { GameInfoOverlay } from "./board/GameInfoOverlay";
+import { Flex, Spacer } from "@chakra-ui/layout";
+import { IconButton } from "@chakra-ui/button";
+import { FaCompress, FaExpand, FaInfoCircle } from "react-icons/fa";
 
 type Props = {
   handlePointClicked?: (p: Point) => void;
@@ -26,6 +29,7 @@ type Props = {
   isPlayIconActive?: boolean;
   isTurnedPlayIconActive?: boolean;
   isScaleVisible?: boolean;
+  toggleIsScaleVisible: any;
 };
 
 const nums = [...Array(20)].map((_, i) => i + 1);
@@ -47,6 +51,7 @@ export const PresenterWide: FC<Props> = ({
   isPlayIconActive = true,
   isTurnedPlayIconActive = false,
   isScaleVisible = false,
+  toggleIsScaleVisible,
 }: Props) => {
   const ref = useRef(null);
   const [containerWidth] = useResizeObserver(ref);
@@ -100,10 +105,13 @@ export const PresenterWide: FC<Props> = ({
     </>
   );
 
+  // responsive
+  const isLargerThanMd = boardContainerWidthPx > 480 ? true : false;
+
   return (
     <div ref={ref} style={{ height: boardContainerWidthPx + "px" }}>
       <div style={{ position: "relative" }}>
-        <FontAwesomeIcon
+        {/* <FontAwesomeIcon
           icon={faInfoCircle}
           style={{
             fontSize: `${containerWidth / 12}px`,
@@ -113,7 +121,32 @@ export const PresenterWide: FC<Props> = ({
             cursor: "pointer",
           }}
           onClick={() => setIsBoardOverlayVisible(!isBoardOverlayVisible)}
-        />
+        /> */}
+
+        <Flex
+          style={{
+            position: "absolute",
+            right: "5%",
+          }}
+        >
+          <Spacer />
+
+          <IconButton
+            bg="white"
+            size={isLargerThanMd ? "md" : "sm"}
+            aria-label="download sgf"
+            icon={<FaInfoCircle />}
+            onClick={() => setIsBoardOverlayVisible(!isBoardOverlayVisible)}
+          />
+          <IconButton
+            bg="white"
+            ml="1"
+            size={isLargerThanMd ? "md" : "sm"}
+            aria-label="download sgf"
+            icon={isScaleVisible ? <FaExpand /> : <FaCompress />}
+            onClick={toggleIsScaleVisible}
+          />
+        </Flex>
 
         <p
           style={{
@@ -124,7 +157,7 @@ export const PresenterWide: FC<Props> = ({
             height: containerWidth * 0.5 + "px",
             margin: `0 ${containerWidth * 0.02}px`,
             overflow: "scroll",
-            fontSize: `${containerWidth / 35}px`,
+            fontSize: `${containerWidth / 28}px`,
           }}
         >
           {comment}
