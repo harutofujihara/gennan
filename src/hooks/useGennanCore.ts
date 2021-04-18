@@ -11,7 +11,6 @@ import { useEffect, useReducer } from "react";
 type Args = {
   initGnc: GennanCore;
   onSgfChange?: (sgf: string) => void;
-  onSnapshotSgfChange?: (sgf: string) => void;
   onPathChange?: (path: TreePath) => void;
 };
 
@@ -30,7 +29,8 @@ type Action =
   | { type: "SET_GAME_NAME"; gameName: string }
   | { type: "SET_COMMENT"; comment: string }
   | { type: "SET_BLACK_PLAYER"; blackPlayer: string }
-  | { type: "SET_WHITE_PLAYER"; whitePlayer: string };
+  | { type: "SET_WHITE_PLAYER"; whitePlayer: string }
+  | { type: "TAKE_SNAPSHOT" };
 
 type Operation = {
   forward: (i: number) => void;
@@ -48,17 +48,17 @@ type Operation = {
   setComment: (comment: string) => void;
   setBlackPlayer: (bp: string) => void;
   setWhitePlayer: (wp: string) => void;
+  takeSnapshot: () => void;
 };
 
 const useGennanCore = ({
   initGnc,
   onSgfChange,
-  onSnapshotSgfChange,
   onPathChange,
 }: Args): [GennanCore, Operation] => {
   // reducer
   const reducer = (gnc: GennanCore, action: Action): GennanCore => {
-    const cloned = gnc.clone(); // 関数を純粋に保つため、cloneしたインスタンスを操作する(reducerは2回実行され、操作が純粋でないとバグになる)
+    let cloned = gnc.clone(); // 関数を純粋に保つため、cloneしたインスタンスを操作する(reducerは2回実行され、操作が純粋でないとバグになる)
 
     switch (action.type) {
       case "FORWARD":
@@ -107,6 +107,9 @@ const useGennanCore = ({
       case "SET_WHITE_PLAYER":
         cloned.setWhitePlayer(action.whitePlayer);
         break;
+      case "TAKE_SNAPSHOT":
+        cloned = GennanCore.createFromSgf(cloned.snapshotSgf);
+        break;
     }
 
     // if (onSgfChange != null && gnc.sgf !== cloned.sgf) {
@@ -126,11 +129,7 @@ const useGennanCore = ({
       onSgfChange(gnc.sgf);
     }, [gnc.sgf, onSgfChange]);
   }
-  if (onSnapshotSgfChange != null) {
-    useEffect(() => {
-      onSnapshotSgfChange(gnc.snapshotSgf);
-    }, [gnc.snapshotSgf, onSnapshotSgfChange]);
-  }
+
   if (onPathChange != null) {
     useEffect(() => {
       onPathChange(gnc.currentPath);
@@ -185,6 +184,9 @@ const useGennanCore = ({
   const setWhitePlayer = (whitePlayer: string): void => {
     dispatch({ type: "SET_WHITE_PLAYER", whitePlayer });
   };
+  const takeSnapshot = (): void => {
+    dispatch({ type: "TAKE_SNAPSHOT" });
+  };
 
   return [
     gnc,
@@ -204,6 +206,7 @@ const useGennanCore = ({
       setComment,
       setBlackPlayer,
       setWhitePlayer,
+      takeSnapshot,
     },
   ];
 };

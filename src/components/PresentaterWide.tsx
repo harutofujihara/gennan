@@ -26,6 +26,7 @@ type Props = {
   isPlayIconActive?: boolean;
   isTurnedPlayIconActive?: boolean;
   isScaleVisible?: boolean;
+  toggleIsScaleVisible: () => void;
 };
 
 const nums = [...Array(20)].map((_, i) => i + 1);
@@ -47,6 +48,7 @@ export const PresenterWide: FC<Props> = ({
   isPlayIconActive = true,
   isTurnedPlayIconActive = false,
   isScaleVisible = false,
+  toggleIsScaleVisible,
 }: Props) => {
   const ref = useRef(null);
   const [containerWidth] = useResizeObserver(ref);
@@ -115,6 +117,19 @@ export const PresenterWide: FC<Props> = ({
           onClick={() => setIsBoardOverlayVisible(!isBoardOverlayVisible)}
         />
 
+        <FontAwesomeIcon
+          icon={isScaleVisible ? faExpand : faCompress}
+          style={{
+            fontSize: `${containerWidth / 35}px`,
+            position: "absolute",
+            right: containerWidth * 0.05 + "px",
+            top: containerWidth * 0.05 + "px",
+            transform: "translateX(50%)",
+            cursor: "pointer",
+          }}
+          onClick={toggleIsScaleVisible}
+        />
+
         <p
           style={{
             position: "absolute",
@@ -124,7 +139,7 @@ export const PresenterWide: FC<Props> = ({
             height: containerWidth * 0.5 + "px",
             margin: `0 ${containerWidth * 0.02}px`,
             overflow: "scroll",
-            fontSize: `${containerWidth / 35}px`,
+            fontSize: `${containerWidth / 28}px`,
           }}
         >
           {comment}

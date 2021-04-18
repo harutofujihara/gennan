@@ -29,6 +29,11 @@ import {
   faMinusCircle,
   faSearchPlus,
   faSearchMinus,
+  faStop,
+  faDownload,
+  faFileImport,
+  faArrowRight,
+  faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faSquare,
@@ -194,7 +199,8 @@ type Props = {
   onClickPlayIcon: () => void;
   onClickTurnedPlayIcon: () => void;
   onClickNextButton: () => void;
-  onClickObjectGroupIcon: () => void;
+  startSelectMagnification: () => void;
+  cancelSelectMagnification: () => void;
   rangeSideNum: number;
   setRangeSideNum: (n: number) => void;
   rangeFulcrumPoint: Point;
@@ -204,15 +210,15 @@ type Props = {
   isPreviewing: boolean;
   confirmMagnification: () => void;
   isScaleVisible?: boolean;
+  toggleIsScaleVisible: () => void;
+  takeSnapshot: () => void;
 };
 
 export const Presenter: FC<Props> = ({
   mode,
   editModeInfos,
   sideNum,
-
   fulcrumPoint = { x: 1, y: 1 },
-
   viewBoard,
   gameName = "",
   blackPlayer = "",
@@ -230,7 +236,8 @@ export const Presenter: FC<Props> = ({
   onClickPlayIcon,
   onClickTurnedPlayIcon,
   onClickNextButton,
-  onClickObjectGroupIcon,
+  startSelectMagnification,
+  cancelSelectMagnification,
   rangeSideNum,
   rangeFulcrumPoint,
   setRangeSideNum,
@@ -240,6 +247,8 @@ export const Presenter: FC<Props> = ({
   isPreviewing,
   confirmMagnification,
   isScaleVisible = false,
+  toggleIsScaleVisible,
+  takeSnapshot,
 }: Props) => {
   const ref = useRef(null);
   const [boardContainerWidthPx] = useResizeObserver(ref);
@@ -383,6 +392,17 @@ export const Presenter: FC<Props> = ({
         }}
       >
         <FontAwesomeIcon
+          icon={isScaleVisible ? faExpand : faCompress}
+          style={{
+            fontSize: `${boardContainerWidthPx / 24}px`,
+            position: "absolute",
+            left: boardContainerWidthPx * 0.01 + "px",
+            top: boardContainerWidthPx * 0.1 + "px",
+            cursor: "pointer",
+          }}
+          onClick={toggleIsScaleVisible}
+        />
+        <FontAwesomeIcon
           icon={faInfoCircle}
           style={{
             fontSize: `${boardContainerWidthPx / 9}px`,
@@ -396,6 +416,43 @@ export const Presenter: FC<Props> = ({
         />
 
         <FontAwesomeIcon
+          icon={faFileImport}
+          style={{
+            fontSize: `${boardContainerWidthPx / 24}px`,
+            position: "absolute",
+            top: boardContainerWidthPx * 0.1 + "px",
+            right: boardContainerWidthPx * 0.3 + "px",
+            cursor: "pointer",
+            opacity: mode === Mode.EditMagnification ? 0.5 : 1,
+          }}
+        />
+
+        <FontAwesomeIcon
+          icon={faDownload}
+          style={{
+            fontSize: `${boardContainerWidthPx / 24}px`,
+            position: "absolute",
+            top: boardContainerWidthPx * 0.1 + "px",
+            right: boardContainerWidthPx * 0.2 + "px",
+            cursor: "pointer",
+            opacity: mode === Mode.EditMagnification ? 0.5 : 1,
+          }}
+        />
+
+        <FontAwesomeIcon
+          icon={faStop}
+          style={{
+            fontSize: `${boardContainerWidthPx / 24}px`,
+            position: "absolute",
+            top: boardContainerWidthPx * 0.1 + "px",
+            right: boardContainerWidthPx * 0.1 + "px",
+            cursor: "pointer",
+            opacity: mode === Mode.EditMagnification ? 0.5 : 1,
+          }}
+          onClick={takeSnapshot}
+        />
+
+        <FontAwesomeIcon
           icon={faObjectGroup}
           style={{
             fontSize: `${boardContainerWidthPx / 24}px`,
@@ -403,10 +460,12 @@ export const Presenter: FC<Props> = ({
             top: boardContainerWidthPx * 0.1 + "px",
             right: boardContainerWidthPx * 0.01 + "px",
             cursor: "pointer",
-            opacity: mode === Mode.EditMagnification ? 0.5 : 1,
+            // opacity: mode === Mode.EditMagnification ? 0.5 : 1,
           }}
-          onClick={() =>
-            mode !== Mode.EditMagnification && onClickObjectGroupIcon()
+          onClick={
+            mode === Mode.EditMagnification
+              ? () => cancelSelectMagnification()
+              : () => startSelectMagnification()
           }
         />
       </div>
@@ -544,14 +603,14 @@ export const Presenter: FC<Props> = ({
             <p
               style={{ margin: 0, fontSize: `${boardContainerWidthPx / 25}px` }}
             >
-              置石をセットしてください
+              Set handicap stones
             </p>
 
             <FlatSimpleButton
               style={{ fontSize: `${boardContainerWidthPx / 30}px` }}
               onClick={onClickNextButton}
             >
-              置石を終了して手順に進む <FontAwesomeIcon icon={faCaretRight} />
+              Record game context next <FontAwesomeIcon icon={faCaretRight} />
             </FlatSimpleButton>
           </>
         )}
@@ -603,12 +662,29 @@ export const Presenter: FC<Props> = ({
         )}
         {mode === Mode.EditMagnification && (
           <>
+            <FlatSimpleButton
+              style={{
+                fontSize: `${boardContainerWidthPx / 30}px`,
+                marginRight: "1rem",
+                position: "absolute",
+                left: 0,
+                bottom: 0,
+              }}
+              onClick={
+                isPreviewing
+                  ? () => cancelPreviewMagnification()
+                  : () => cancelSelectMagnification()
+              }
+            >
+              <FontAwesomeIcon icon={faArrowLeft} /> Cancel
+            </FlatSimpleButton>
+
             <FontAwesomeIcon
               icon={faSearchMinus}
               style={{
                 fontSize: `${boardContainerWidthPx / 9}px`,
                 position: "absolute",
-                left: (2 / 40) * boardContainerWidthPx + "px",
+                left: "38%",
                 userSelect: "none",
                 opacity: 1 < rangeSideNum && !isPreviewing ? 1 : 0.5,
                 cursor: "pointer",
@@ -620,53 +696,31 @@ export const Presenter: FC<Props> = ({
               style={{
                 fontSize: `${boardContainerWidthPx / 9}px`,
                 position: "absolute",
-                left: (8 / 40) * boardContainerWidthPx + "px",
+                left: "52%",
                 userSelect: "none",
                 opacity: rangeSideNum < sideNum && !isPreviewing ? 1 : 0.5,
                 cursor: "pointer",
               }}
               onClick={() => !isPreviewing && expandMagnification()}
             />
-            <div
+
+            <FlatSimpleButton
               style={{
+                fontSize: `${boardContainerWidthPx / 30}px`,
                 position: "absolute",
                 right: 0,
                 bottom: 0,
+                background: isPreviewing ? "#808080" : "#C0C0C0",
               }}
+              onClick={
+                isPreviewing
+                  ? () => confirmMagnification()
+                  : () => previewMagnification()
+              }
             >
-              {!isPreviewing && (
-                <FlatSimpleButton
-                  style={{
-                    fontSize: `${boardContainerWidthPx / 30}px`,
-                    marginRight: "1rem",
-                  }}
-                  onClick={previewMagnification}
-                >
-                  Preview <FontAwesomeIcon icon={faCaretRight} />
-                </FlatSimpleButton>
-              )}
-              {isPreviewing && (
-                <FlatSimpleButton
-                  style={{
-                    fontSize: `${boardContainerWidthPx / 30}px`,
-                    marginRight: "1rem",
-                  }}
-                  onClick={cancelPreviewMagnification}
-                >
-                  Cancel <FontAwesomeIcon icon={faUndo} />
-                </FlatSimpleButton>
-              )}
-
-              <FlatSimpleButton
-                style={{
-                  fontSize: `${boardContainerWidthPx / 30}px`,
-                  opacity: isPreviewing ? 1 : 0.5,
-                }}
-                onClick={() => isPreviewing && confirmMagnification()}
-              >
-                Confirm
-              </FlatSimpleButton>
-            </div>
+              {isPreviewing ? "Confirm" : "Preview"}{" "}
+              <FontAwesomeIcon icon={faArrowRight} />
+            </FlatSimpleButton>
           </>
         )}
       </div>
