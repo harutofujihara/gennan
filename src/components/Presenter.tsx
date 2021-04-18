@@ -49,7 +49,7 @@ import {
   MarkupMode,
   Mode,
 } from "../types";
-import { commentValidate, splitArr } from "../utils/utils";
+import { commentValidate, download, splitArr } from "../utils/utils";
 import { EditModeInfo } from "./Container";
 import { SvgBoard } from "./board/SvgBoard";
 import { GameInfoOverlay } from "./board/GameInfoOverlay";
@@ -212,6 +212,7 @@ type Props = {
   isScaleVisible?: boolean;
   toggleIsScaleVisible: () => void;
   takeSnapshot: () => void;
+  downloadSgf: () => void;
 };
 
 export const Presenter: FC<Props> = ({
@@ -249,6 +250,7 @@ export const Presenter: FC<Props> = ({
   isScaleVisible = false,
   toggleIsScaleVisible,
   takeSnapshot,
+  downloadSgf,
 }: Props) => {
   const ref = useRef(null);
   const [boardContainerWidthPx] = useResizeObserver(ref);
@@ -437,6 +439,7 @@ export const Presenter: FC<Props> = ({
             cursor: "pointer",
             opacity: mode === Mode.EditMagnification ? 0.5 : 1,
           }}
+          onClick={downloadSgf}
         />
 
         <FontAwesomeIcon

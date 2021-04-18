@@ -21,6 +21,7 @@ import { PresenterWide } from "./PresentaterWide";
 import { Presenter } from "./Presenter";
 import { parseGennanCodeToParams } from "../utils/gennanCode/parser";
 import { stringifyGennanCode } from "../utils/gennanCode/stringifier";
+import { download } from "../utils/utils";
 
 // type Options = {
 //   sgf?: string;
@@ -336,6 +337,8 @@ export const Container: FC<Props> = ({
     setEditMode(EditFixedStoneMode.Black);
   };
 
+  const onDownloadSgf = () => download(gnc.gameName + ".sgf", gnc.sgf);
+
   // render
   if (usage === "viewWide") {
     return (
@@ -450,6 +453,7 @@ export const Container: FC<Props> = ({
         isPreviewing={isPreviewing}
         confirmMagnification={confirmMagnification}
         takeSnapshot={onTakeSnapshot}
+        downloadSgf={onDownloadSgf}
       />
     );
   }
