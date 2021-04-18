@@ -58,4 +58,16 @@ const download = (filename: string, text: string) => {
   document.body.removeChild(element);
 };
 
-export { toCircled, splitArr, commentValidate, download };
+function readFileText(file: any): Promise<string> {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.addEventListener(
+      "load",
+      () => resolve(reader.result as string),
+      false
+    );
+    reader.readAsText(file);
+  });
+}
+
+export { toCircled, splitArr, commentValidate, download, readFileText };

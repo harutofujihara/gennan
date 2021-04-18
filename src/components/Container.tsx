@@ -112,6 +112,7 @@ export const Container: FC<Props> = ({
       setBlackPlayer,
       setWhitePlayer,
       takeSnapshot,
+      importSgf,
     },
   ] = useGennanCore({
     initGnc,
@@ -357,6 +358,7 @@ export const Container: FC<Props> = ({
         isTurnedPlayIconActive={gnc.existsBackMove()}
         sideNum={sideNum}
         fulcrumPoint={fulcrumPoint}
+        downloadSgf={onDownloadSgf}
       />
     );
   } else {
@@ -454,6 +456,7 @@ export const Container: FC<Props> = ({
         confirmMagnification={confirmMagnification}
         takeSnapshot={onTakeSnapshot}
         downloadSgf={onDownloadSgf}
+        importSgf={importSgf}
       />
     );
   }

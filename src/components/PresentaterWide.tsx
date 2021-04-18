@@ -6,6 +6,7 @@ import {
   faInfoCircle,
   faCompress,
   faExpand,
+  faDownload,
 } from "@fortawesome/free-solid-svg-icons";
 import { useResizeObserver } from "../hooks/useResizeObserver";
 import { BoardContainer, BoardContent } from "./board/BoardContainer";
@@ -27,6 +28,7 @@ type Props = {
   isTurnedPlayIconActive?: boolean;
   isScaleVisible?: boolean;
   toggleIsScaleVisible: () => void;
+  downloadSgf: () => void;
 };
 
 const nums = [...Array(20)].map((_, i) => i + 1);
@@ -49,6 +51,7 @@ export const PresenterWide: FC<Props> = ({
   isTurnedPlayIconActive = false,
   isScaleVisible = false,
   toggleIsScaleVisible,
+  downloadSgf,
 }: Props) => {
   const ref = useRef(null);
   const [containerWidth] = useResizeObserver(ref);
@@ -105,6 +108,19 @@ export const PresenterWide: FC<Props> = ({
   return (
     <div ref={ref} style={{ height: boardContainerWidthPx + "px" }}>
       <div style={{ position: "relative" }}>
+        <FontAwesomeIcon
+          icon={faDownload}
+          style={{
+            fontSize: `${containerWidth / 35}px`,
+            position: "absolute",
+            right: containerWidth * 0.25 + "px",
+            top: containerWidth * 0.05 + "px",
+            transform: "translateX(50%)",
+            cursor: "pointer",
+          }}
+          onClick={downloadSgf}
+        />
+
         <FontAwesomeIcon
           icon={faInfoCircle}
           style={{

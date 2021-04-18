@@ -30,7 +30,8 @@ type Action =
   | { type: "SET_COMMENT"; comment: string }
   | { type: "SET_BLACK_PLAYER"; blackPlayer: string }
   | { type: "SET_WHITE_PLAYER"; whitePlayer: string }
-  | { type: "TAKE_SNAPSHOT" };
+  | { type: "TAKE_SNAPSHOT" }
+  | { type: "IMPORT_SGF"; sgf: string };
 
 type Operation = {
   forward: (i: number) => void;
@@ -49,6 +50,7 @@ type Operation = {
   setBlackPlayer: (bp: string) => void;
   setWhitePlayer: (wp: string) => void;
   takeSnapshot: () => void;
+  importSgf: (sgf: string) => void;
 };
 
 const useGennanCore = ({
@@ -109,6 +111,9 @@ const useGennanCore = ({
         break;
       case "TAKE_SNAPSHOT":
         cloned = GennanCore.createFromSgf(cloned.snapshotSgf);
+        break;
+      case "IMPORT_SGF":
+        cloned = GennanCore.createFromSgf(action.sgf);
         break;
     }
 
@@ -187,6 +192,9 @@ const useGennanCore = ({
   const takeSnapshot = (): void => {
     dispatch({ type: "TAKE_SNAPSHOT" });
   };
+  const importSgf = (sgf: string): void => {
+    dispatch({ type: "IMPORT_SGF", sgf });
+  };
 
   return [
     gnc,
@@ -207,6 +215,7 @@ const useGennanCore = ({
       setBlackPlayer,
       setWhitePlayer,
       takeSnapshot,
+      importSgf,
     },
   ];
 };

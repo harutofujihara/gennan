@@ -49,7 +49,12 @@ import {
   MarkupMode,
   Mode,
 } from "../types";
-import { commentValidate, download, splitArr } from "../utils/utils";
+import {
+  commentValidate,
+  download,
+  readFileText,
+  splitArr,
+} from "../utils/utils";
 import { EditModeInfo } from "./Container";
 import { SvgBoard } from "./board/SvgBoard";
 import { GameInfoOverlay } from "./board/GameInfoOverlay";
@@ -213,6 +218,7 @@ type Props = {
   toggleIsScaleVisible: () => void;
   takeSnapshot: () => void;
   downloadSgf: () => void;
+  importSgf: (sgf: string) => void;
 };
 
 export const Presenter: FC<Props> = ({
@@ -251,6 +257,7 @@ export const Presenter: FC<Props> = ({
   toggleIsScaleVisible,
   takeSnapshot,
   downloadSgf,
+  importSgf,
 }: Props) => {
   const ref = useRef(null);
   const [boardContainerWidthPx] = useResizeObserver(ref);
@@ -384,8 +391,29 @@ export const Presenter: FC<Props> = ({
 
   const [isCommentValid, setIsCommentValid] = useState(true);
 
+  // import sgf
+  const inputFileRef = useRef(null);
+  const onFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      const sgf = await readFileText(file);
+      console.log(file);
+      console.log(sgf);
+      importSgf(sgf);
+      (e.target as any).value = null; // reset
+    }
+  };
+
   return (
     <div ref={ref}>
+      <input
+        type="file"
+        id="file"
+        ref={inputFileRef}
+        style={{ display: "none" }}
+        onChange={onFileChange}
+      />
+
       <div
         style={{
           textAlign: "center",
@@ -426,6 +454,10 @@ export const Presenter: FC<Props> = ({
             right: boardContainerWidthPx * 0.3 + "px",
             cursor: "pointer",
             opacity: mode === Mode.EditMagnification ? 0.5 : 1,
+          }}
+          onClick={() => {
+            const cur = inputFileRef.current as any;
+            if (cur) cur.click();
           }}
         />
 
