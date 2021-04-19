@@ -1,21 +1,4 @@
 import React, { FC, useState, useEffect } from "react";
-import { FaSearchPlus, FaStop } from "react-icons/fa";
-import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogContent,
-  AlertDialogOverlay,
-  useDisclosure,
-  AlertDialogCloseButton,
-  Button,
-  Divider,
-  Flex,
-  IconButton,
-  Spacer,
-  useBoolean,
-} from "@chakra-ui/react";
 import {
   GennanCore,
   Color,
@@ -38,8 +21,7 @@ import { PresenterWide } from "./PresentaterWide";
 import { Presenter } from "./Presenter";
 import { parseGennanCodeToParams } from "../utils/gennanCode/parser";
 import { stringifyGennanCode } from "../utils/gennanCode/stringifier";
-import { DownloadIcon } from "@chakra-ui/icons";
-import { useToggle } from "react-use";
+import { download } from "../utils/utils";
 
 // type Options = {
 //   sgf?: string;
@@ -70,7 +52,6 @@ export type Props = {
   fulcrumPoint?: Point;
   gennanCode?: string;
   onGennanCodeChanged?: (gncd: string) => void;
-  bg?: string;
 };
 
 export type EditModeInfo = {
@@ -93,7 +74,6 @@ export const Container: FC<Props> = ({
   sideCount: sc,
   gennanCode,
   onGennanCodeChanged,
-  bg,
 }: Props) => {
   // console.log("Gennan is rendering!");
 
@@ -132,6 +112,7 @@ export const Container: FC<Props> = ({
       setBlackPlayer,
       setWhitePlayer,
       takeSnapshot,
+      importSgf,
     },
   ] = useGennanCore({
     initGnc,
@@ -348,13 +329,16 @@ export const Container: FC<Props> = ({
     }, [gnc]);
   }
 
-  const [isScaleVisible, toggleIsScaleVisible] = useToggle(false);
+  const [isScaleVisible, setIsScaleVisible] = useState(false);
+  const toggleIsScaleVisible = () => setIsScaleVisible(!isScaleVisible);
 
   const onTakeSnapshot = () => {
     takeSnapshot();
     setMode(Mode.EditFixedStones);
     setEditMode(EditFixedStoneMode.Black);
   };
+
+  const onDownloadSgf = () => download(gnc.gameName + ".sgf", gnc.sgf);
 
   // render
   if (usage === "viewWide") {
@@ -374,7 +358,7 @@ export const Container: FC<Props> = ({
         isTurnedPlayIconActive={gnc.existsBackMove()}
         sideNum={sideNum}
         fulcrumPoint={fulcrumPoint}
-        bg={bg}
+        downloadSgf={onDownloadSgf}
       />
     );
   } else {
@@ -471,7 +455,8 @@ export const Container: FC<Props> = ({
         isPreviewing={isPreviewing}
         confirmMagnification={confirmMagnification}
         takeSnapshot={onTakeSnapshot}
-        bg={bg}
+        downloadSgf={onDownloadSgf}
+        importSgf={importSgf}
       />
     );
   }

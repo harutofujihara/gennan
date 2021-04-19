@@ -1,7 +1,6 @@
 import React, { FC, useEffect, useRef, useState } from "react";
 import { Container, Props as ContainerProps } from "./Container";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
-import { ChakraProvider } from "@chakra-ui/react";
 
 function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -40,15 +39,13 @@ export const ErrorBoundaryContainer: FC<ContainerProps> = (
   props: ContainerProps
 ) => {
   return (
-    <ChakraProvider>
-      <ErrorBoundary
-        FallbackComponent={ErrorFallback}
-        onReset={() => {
-          // reset the state of your app so the error doesn't happen again
-        }}
-      >
-        <Container {...props} />
-      </ErrorBoundary>
-    </ChakraProvider>
+    <ErrorBoundary
+      FallbackComponent={ErrorFallback}
+      onReset={() => {
+        // reset the state of your app so the error doesn't happen again
+      }}
+    >
+      <Container {...props} />
+    </ErrorBoundary>
   );
 };

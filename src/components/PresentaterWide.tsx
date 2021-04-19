@@ -6,14 +6,12 @@ import {
   faInfoCircle,
   faCompress,
   faExpand,
+  faDownload,
 } from "@fortawesome/free-solid-svg-icons";
 import { useResizeObserver } from "../hooks/useResizeObserver";
 import { BoardContainer, BoardContent } from "./board/BoardContainer";
 import { SvgBoard } from "./board/SvgBoard";
 import { GameInfoOverlay } from "./board/GameInfoOverlay";
-import { Box, Flex, Spacer } from "@chakra-ui/layout";
-import { IconButton } from "@chakra-ui/button";
-import { FaCompress, FaExpand, FaInfoCircle } from "react-icons/fa";
 
 type Props = {
   handlePointClicked?: (p: Point) => void;
@@ -29,8 +27,8 @@ type Props = {
   isPlayIconActive?: boolean;
   isTurnedPlayIconActive?: boolean;
   isScaleVisible?: boolean;
-  toggleIsScaleVisible: any;
-  bg?: string;
+  toggleIsScaleVisible: () => void;
+  downloadSgf: () => void;
 };
 
 const nums = [...Array(20)].map((_, i) => i + 1);
@@ -53,7 +51,7 @@ export const PresenterWide: FC<Props> = ({
   isTurnedPlayIconActive = false,
   isScaleVisible = false,
   toggleIsScaleVisible,
-  bg,
+  downloadSgf,
 }: Props) => {
   const ref = useRef(null);
   const [containerWidth] = useResizeObserver(ref);
@@ -107,17 +105,23 @@ export const PresenterWide: FC<Props> = ({
     </>
   );
 
-  // responsive
-  const isLargerThanMd = boardContainerWidthPx > 480 ? true : false;
-
   return (
-    <Box
-      ref={ref}
-      style={{ height: boardContainerWidthPx + "px" }}
-      bg={bg ? bg : "white"}
-    >
+    <div ref={ref} style={{ height: boardContainerWidthPx + "px" }}>
       <div style={{ position: "relative" }}>
-        {/* <FontAwesomeIcon
+        <FontAwesomeIcon
+          icon={faDownload}
+          style={{
+            fontSize: `${containerWidth / 35}px`,
+            position: "absolute",
+            right: containerWidth * 0.25 + "px",
+            top: containerWidth * 0.05 + "px",
+            transform: "translateX(50%)",
+            cursor: "pointer",
+          }}
+          onClick={downloadSgf}
+        />
+
+        <FontAwesomeIcon
           icon={faInfoCircle}
           style={{
             fontSize: `${containerWidth / 12}px`,
@@ -127,32 +131,20 @@ export const PresenterWide: FC<Props> = ({
             cursor: "pointer",
           }}
           onClick={() => setIsBoardOverlayVisible(!isBoardOverlayVisible)}
-        /> */}
+        />
 
-        <Flex
+        <FontAwesomeIcon
+          icon={isScaleVisible ? faExpand : faCompress}
           style={{
+            fontSize: `${containerWidth / 35}px`,
             position: "absolute",
-            right: "5%",
+            right: containerWidth * 0.05 + "px",
+            top: containerWidth * 0.05 + "px",
+            transform: "translateX(50%)",
+            cursor: "pointer",
           }}
-        >
-          <Spacer />
-
-          <IconButton
-            bg={bg ? bg : "white"}
-            size={isLargerThanMd ? "md" : "sm"}
-            aria-label="download sgf"
-            icon={<FaInfoCircle />}
-            onClick={() => setIsBoardOverlayVisible(!isBoardOverlayVisible)}
-          />
-          <IconButton
-            bg={bg ? bg : "white"}
-            ml="1"
-            size={isLargerThanMd ? "md" : "sm"}
-            aria-label="download sgf"
-            icon={isScaleVisible ? <FaExpand /> : <FaCompress />}
-            onClick={toggleIsScaleVisible}
-          />
-        </Flex>
+          onClick={toggleIsScaleVisible}
+        />
 
         <p
           style={{
@@ -234,6 +226,6 @@ export const PresenterWide: FC<Props> = ({
           onClick={onPlayIconClicked}
         />
       </div>
-    </Box>
+    </div>
   );
 };
