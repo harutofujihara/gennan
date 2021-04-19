@@ -92,7 +92,7 @@ export const PresenterWide: FC<Props> = ({
             key={i}
             style={{
               position: "absolute",
-              fontSize: oneSquarePx * 0.5 + "5px",
+              fontSize: oneSquarePx * 0.5 + "px",
               top: 0.5 * oneSquarePx + "px",
               left: (i + 1.5) * oneSquarePx + "px",
               transform: "translate(-50%, -50%)",
