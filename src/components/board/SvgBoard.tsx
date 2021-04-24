@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, Ref, useEffect, useRef, useState } from "react";
 import { ViewBoard, Point } from "gennan-core";
 import { Square } from "./square";
 
@@ -9,6 +9,7 @@ type Props = {
   fulcrumPoint: Point;
   sideNum: number;
   onClickPoint: (point: Point) => void;
+  boardRef: Ref<SVGSVGElement>;
 };
 
 export const PointPosition = {
@@ -31,6 +32,7 @@ export const SvgBoard: FC<Props> = ({
   fulcrumPoint,
   sideNum,
   onClickPoint,
+  boardRef,
 }: Props) => {
   const [squareWidth, setSquareWidth] = useState(0);
   const isNextIdxVisible = (): boolean => {
@@ -107,10 +109,11 @@ export const SvgBoard: FC<Props> = ({
       version="1.1"
       baseProfile="full"
       xmlns="http://www.w3.org/2000/svg"
-      // width={`${widthPx}px`}
-      // height={`${widthPx}px`}
-      width="100%"
-      height="100%"
+      width={`${widthPx}px`}
+      height={`${widthPx}px`}
+      // width="100%"
+      // height="100%" // 絶対値で指定しないと画像変換の際にサイズを指定できない
+      ref={boardRef}
     >
       <rect width="100%" height="100%" fill="#f5be7e" stroke="black" />
       {Squares}

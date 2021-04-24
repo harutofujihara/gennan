@@ -1,4 +1,11 @@
-import React, { FC, useRef, useState, useEffect, ChangeEvent } from "react";
+import React, {
+  FC,
+  useRef,
+  useState,
+  useEffect,
+  ChangeEvent,
+  Ref,
+} from "react";
 import styled, { css } from "styled-components";
 import {
   GridNum,
@@ -34,6 +41,8 @@ import {
   faFileImport,
   faArrowRight,
   faArrowLeft,
+  faImage,
+  faCamera,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faSquare,
@@ -49,12 +58,7 @@ import {
   MarkupMode,
   Mode,
 } from "../types";
-import {
-  commentValidate,
-  download,
-  readFileText,
-  splitArr,
-} from "../utils/utils";
+import { commentValidate, readFileText, splitArr } from "../utils/utils";
 import { EditModeInfo } from "./Container";
 import { SvgBoard } from "./board/SvgBoard";
 import { GameInfoOverlay } from "./board/GameInfoOverlay";
@@ -219,6 +223,8 @@ type Props = {
   takeSnapshot: () => void;
   downloadSgf: () => void;
   importSgf: (sgf: string) => void;
+  svgBoardRef: Ref<SVGSVGElement>;
+  downloadBoardImage: () => Promise<void>;
 };
 
 export const Presenter: FC<Props> = ({
@@ -258,6 +264,8 @@ export const Presenter: FC<Props> = ({
   takeSnapshot,
   downloadSgf,
   importSgf,
+  svgBoardRef,
+  downloadBoardImage,
 }: Props) => {
   const ref = useRef(null);
   const [boardContainerWidthPx] = useResizeObserver(ref);
@@ -446,12 +454,25 @@ export const Presenter: FC<Props> = ({
         />
 
         <FontAwesomeIcon
+          icon={faCamera}
+          style={{
+            fontSize: `${boardContainerWidthPx / 24}px`,
+            position: "absolute",
+            top: boardContainerWidthPx * 0.1 + "px",
+            right: boardContainerWidthPx * 0.36 + "px",
+            cursor: "pointer",
+            opacity: mode === Mode.EditMagnification ? 0.5 : 1,
+          }}
+          onClick={downloadBoardImage}
+        />
+
+        <FontAwesomeIcon
           icon={faFileImport}
           style={{
             fontSize: `${boardContainerWidthPx / 24}px`,
             position: "absolute",
             top: boardContainerWidthPx * 0.1 + "px",
-            right: boardContainerWidthPx * 0.3 + "px",
+            right: boardContainerWidthPx * 0.27 + "px",
             cursor: "pointer",
             opacity: mode === Mode.EditMagnification ? 0.5 : 1,
           }}
@@ -467,7 +488,7 @@ export const Presenter: FC<Props> = ({
             fontSize: `${boardContainerWidthPx / 24}px`,
             position: "absolute",
             top: boardContainerWidthPx * 0.1 + "px",
-            right: boardContainerWidthPx * 0.2 + "px",
+            right: boardContainerWidthPx * 0.18 + "px",
             cursor: "pointer",
             opacity: mode === Mode.EditMagnification ? 0.5 : 1,
           }}
@@ -480,7 +501,7 @@ export const Presenter: FC<Props> = ({
             fontSize: `${boardContainerWidthPx / 24}px`,
             position: "absolute",
             top: boardContainerWidthPx * 0.1 + "px",
-            right: boardContainerWidthPx * 0.1 + "px",
+            right: boardContainerWidthPx * 0.09 + "px",
             cursor: "pointer",
             opacity: mode === Mode.EditMagnification ? 0.5 : 1,
           }}
@@ -493,7 +514,8 @@ export const Presenter: FC<Props> = ({
             fontSize: `${boardContainerWidthPx / 24}px`,
             position: "absolute",
             top: boardContainerWidthPx * 0.1 + "px",
-            right: boardContainerWidthPx * 0.01 + "px",
+            // right: boardContainerWidthPx * 0.01 + "px",
+            right: 0,
             cursor: "pointer",
             // opacity: mode === Mode.EditMagnification ? 0.5 : 1,
           }}
@@ -522,6 +544,7 @@ export const Presenter: FC<Props> = ({
             fulcrumPoint={fulcrumPoint}
             sideNum={sideNum ? sideNum : viewBoard.length}
             onClickPoint={onClickPoint}
+            boardRef={svgBoardRef}
           />
         </BoardContent>
         {isBoardOverlayVisible && (
@@ -580,6 +603,7 @@ export const Presenter: FC<Props> = ({
         }}
       >
         <textarea
+          placeholder="Write comment..."
           disabled={mode === Mode.View || mode === Mode.EditMagnification}
           style={{
             width: "100%",
