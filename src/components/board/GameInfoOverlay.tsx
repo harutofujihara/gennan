@@ -10,10 +10,11 @@ type InputProps = {
   defaultValue: string;
   onChange?: (s: string) => void;
   disabled: boolean;
+  [x: string]: any;
 };
 
 const Input: FC<InputProps> = memo(
-  ({ onChange, defaultValue, disabled }: InputProps) => {
+  ({ onChange, defaultValue, disabled, ...props }: InputProps) => {
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
         onChange && onChange(e.target.value);
@@ -26,6 +27,7 @@ const Input: FC<InputProps> = memo(
         defaultValue={defaultValue}
         onChange={handleChange}
         disabled={disabled}
+        {...props}
       />
     );
   }
@@ -73,18 +75,21 @@ export const GameInfoOverlay: FC<Props> = memo(
               defaultValue={gameName}
               onChange={onGameNameChange}
               disabled={!isEditable}
+              placeholder="Meijinsen"
             />
             <label style={{ color: "white" }}>Black player</label>
             <Input
               defaultValue={blackPlayer}
               onChange={onBlackPlayerChange}
               disabled={!isEditable}
+              placeholder="Shindo Hikaru"
             />
             <label style={{ color: "white" }}>White player</label>
             <Input
               defaultValue={whitePlayer}
               onChange={onWhitePlayerChange}
               disabled={!isEditable}
+              placeholder="Fujiwarano sai"
             />
           </form>
         </div>

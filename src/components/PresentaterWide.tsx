@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState } from "react";
+import React, { FC, Ref, useRef, useState } from "react";
 import { Point, ViewBoard } from "gennan-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,6 +7,7 @@ import {
   faCompress,
   faExpand,
   faDownload,
+  faCamera,
 } from "@fortawesome/free-solid-svg-icons";
 import { useResizeObserver } from "../hooks/useResizeObserver";
 import { BoardContainer, BoardContent } from "./board/BoardContainer";
@@ -29,6 +30,8 @@ type Props = {
   isScaleVisible?: boolean;
   toggleIsScaleVisible: () => void;
   downloadSgf: () => void;
+  svgBoardRef: Ref<SVGSVGElement>;
+  downloadBoardImage: () => Promise<void>;
 };
 
 const nums = [...Array(20)].map((_, i) => i + 1);
@@ -52,6 +55,8 @@ export const PresenterWide: FC<Props> = ({
   isScaleVisible = false,
   toggleIsScaleVisible,
   downloadSgf,
+  svgBoardRef,
+  downloadBoardImage,
 }: Props) => {
   const ref = useRef(null);
   const [containerWidth] = useResizeObserver(ref);
@@ -109,30 +114,41 @@ export const PresenterWide: FC<Props> = ({
     <div ref={ref} style={{ height: boardContainerWidthPx + "px" }}>
       <div style={{ position: "relative" }}>
         <FontAwesomeIcon
-          icon={faDownload}
-          style={{
-            fontSize: `${containerWidth / 35}px`,
-            position: "absolute",
-            right: containerWidth * 0.25 + "px",
-            top: containerWidth * 0.05 + "px",
-            transform: "translateX(50%)",
-            cursor: "pointer",
-          }}
-          onClick={downloadSgf}
-        />
-
-        <FontAwesomeIcon
           icon={faInfoCircle}
           style={{
             fontSize: `${containerWidth / 12}px`,
             position: "absolute",
-            right: containerWidth * 0.15 + "px",
+            right: containerWidth * 0.23 + "px",
             transform: "translateX(50%)",
             cursor: "pointer",
           }}
           onClick={() => setIsBoardOverlayVisible(!isBoardOverlayVisible)}
         />
 
+        <FontAwesomeIcon
+          icon={faCamera}
+          style={{
+            fontSize: `${containerWidth / 35}px`,
+            position: "absolute",
+            right: containerWidth * 0.15 + "px",
+            top: containerWidth * 0.05 + "px",
+            transform: "translateX(50%)",
+            cursor: "pointer",
+          }}
+          onClick={downloadBoardImage}
+        />
+        <FontAwesomeIcon
+          icon={faDownload}
+          style={{
+            fontSize: `${containerWidth / 35}px`,
+            position: "absolute",
+            right: containerWidth * 0.1 + "px",
+            top: containerWidth * 0.05 + "px",
+            transform: "translateX(50%)",
+            cursor: "pointer",
+          }}
+          onClick={downloadSgf}
+        />
         <FontAwesomeIcon
           icon={isScaleVisible ? faExpand : faCompress}
           style={{
@@ -178,6 +194,7 @@ export const PresenterWide: FC<Props> = ({
               fulcrumPoint={fulcrumPoint}
               sideNum={sideNum ? sideNum : viewBoard.length}
               onClickPoint={handlePointClicked}
+              boardRef={svgBoardRef}
             />
           </BoardContent>
           {isBoardOverlayVisible && (

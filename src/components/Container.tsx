@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect, useRef } from "react";
 import {
   GennanCore,
   Color,
@@ -21,7 +21,8 @@ import { PresenterWide } from "./PresentaterWide";
 import { Presenter } from "./Presenter";
 import { parseGennanCodeToParams } from "../utils/gennanCode/parser";
 import { stringifyGennanCode } from "../utils/gennanCode/stringifier";
-import { download } from "../utils/utils";
+import { downloadTextFile } from "../utils/utils";
+import { useDownloadableSVGRef } from "../hooks/useDownloadableSVGRef";
 
 // type Options = {
 //   sgf?: string;
@@ -338,7 +339,15 @@ export const Container: FC<Props> = ({
     setEditMode(EditFixedStoneMode.Black);
   };
 
-  const onDownloadSgf = () => download(gnc.gameName + ".sgf", gnc.sgf);
+  const onDownloadSgf = () => downloadTextFile(gnc.gameName + ".sgf", gnc.sgf);
+
+  const {
+    ref: svgBoardRef,
+    download: downloadBoardImg,
+  } = useDownloadableSVGRef();
+  const downloadBoardImage = async () => {
+    await downloadBoardImg(gnc.gameName ? gnc.gameName : "image" + ".png");
+  };
 
   // render
   if (usage === "viewWide") {
@@ -359,6 +368,8 @@ export const Container: FC<Props> = ({
         sideNum={sideNum}
         fulcrumPoint={fulcrumPoint}
         downloadSgf={onDownloadSgf}
+        svgBoardRef={svgBoardRef}
+        downloadBoardImage={downloadBoardImage}
       />
     );
   } else {
@@ -416,48 +427,53 @@ export const Container: FC<Props> = ({
       setFulcrumPoint({ x: 1, y: 1 });
       setIsPreviewing(false);
     };
+
     return (
-      <Presenter
-        isScaleVisible={isScaleVisible}
-        toggleIsScaleVisible={toggleIsScaleVisible}
-        mode={mode}
-        editModeInfos={editModeInfos}
-        viewBoard={gnc.viewBoard}
-        gameName={gnc.gameName}
-        blackPlayer={gnc.blackPlayer}
-        whitePlayer={gnc.whitePlayer}
-        comment={gnc.comment}
-        isUndoIconActive={!gnc.existsNextMove()}
-        isPlayIconActive={gnc.existsNextMove()}
-        isTurnedPlayIconActive={gnc.existsBackMove()}
-        sideNum={sideNum}
-        fulcrumPoint={fulcrumPoint}
-        handleCommentChange={setComment}
-        handleGameNameChange={setGameName}
-        handleBlackPlayerChange={setBlackPlayer}
-        handleWhitePlayerChange={setWhitePlayer}
-        onClickPoint={handlePointClicked}
-        onClickUndoIcon={() => !gnc.existsNextMove() && removeMove()}
-        onClickPlayIcon={() => gnc.existsNextMove() && forward(0)}
-        onClickTurnedPlayIcon={() => gnc.existsBackMove() && backward()}
-        onClickNextButton={() => {
-          setMode(Mode.EditMoves);
-          setEditMode(EditMoveMode.Move);
-        }}
-        startSelectMagnification={startSelectMagnification}
-        cancelSelectMagnification={cancelSelectMagnification}
-        rangeSideNum={rangeSideNum}
-        setRangeSideNum={setRangeSideNum}
-        rangeFulcrumPoint={rangeFulcrumPoint}
-        setRangeFulcrumPoint={setRangeFulcrumPoint}
-        previewMagnification={previewMagnification}
-        cancelPreviewMagnification={cancelPreviewMagnification}
-        isPreviewing={isPreviewing}
-        confirmMagnification={confirmMagnification}
-        takeSnapshot={onTakeSnapshot}
-        downloadSgf={onDownloadSgf}
-        importSgf={importSgf}
-      />
+      <>
+        <Presenter
+          isScaleVisible={isScaleVisible}
+          toggleIsScaleVisible={toggleIsScaleVisible}
+          mode={mode}
+          editModeInfos={editModeInfos}
+          viewBoard={gnc.viewBoard}
+          gameName={gnc.gameName}
+          blackPlayer={gnc.blackPlayer}
+          whitePlayer={gnc.whitePlayer}
+          comment={gnc.comment}
+          isUndoIconActive={!gnc.existsNextMove()}
+          isPlayIconActive={gnc.existsNextMove()}
+          isTurnedPlayIconActive={gnc.existsBackMove()}
+          sideNum={sideNum}
+          fulcrumPoint={fulcrumPoint}
+          handleCommentChange={setComment}
+          handleGameNameChange={setGameName}
+          handleBlackPlayerChange={setBlackPlayer}
+          handleWhitePlayerChange={setWhitePlayer}
+          onClickPoint={handlePointClicked}
+          onClickUndoIcon={() => !gnc.existsNextMove() && removeMove()}
+          onClickPlayIcon={() => gnc.existsNextMove() && forward(0)}
+          onClickTurnedPlayIcon={() => gnc.existsBackMove() && backward()}
+          onClickNextButton={() => {
+            setMode(Mode.EditMoves);
+            setEditMode(EditMoveMode.Move);
+          }}
+          startSelectMagnification={startSelectMagnification}
+          cancelSelectMagnification={cancelSelectMagnification}
+          rangeSideNum={rangeSideNum}
+          setRangeSideNum={setRangeSideNum}
+          rangeFulcrumPoint={rangeFulcrumPoint}
+          setRangeFulcrumPoint={setRangeFulcrumPoint}
+          previewMagnification={previewMagnification}
+          cancelPreviewMagnification={cancelPreviewMagnification}
+          isPreviewing={isPreviewing}
+          confirmMagnification={confirmMagnification}
+          takeSnapshot={onTakeSnapshot}
+          downloadSgf={onDownloadSgf}
+          importSgf={importSgf}
+          svgBoardRef={svgBoardRef}
+          downloadBoardImage={downloadBoardImage}
+        />
+      </>
     );
   }
 };

@@ -42,7 +42,7 @@ const commentValidate = (s: string) => {
   // return s.trim().length == 0 || s.match(/^[0-9a-zA-Z\n\r.,?\x20\u3000]+$/);
 };
 
-const download = (filename: string, text: string) => {
+const downloadTextFile = (filename: string, text: string) => {
   var element = document.createElement("a");
   element.setAttribute(
     "href",
@@ -70,4 +70,4 @@ function readFileText(file: any): Promise<string> {
   });
 }
 
-export { toCircled, splitArr, commentValidate, download, readFileText };
+export { toCircled, splitArr, commentValidate, downloadTextFile, readFileText };
