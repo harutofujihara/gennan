@@ -30,6 +30,9 @@ type Action =
   | { type: "SET_COMMENT"; comment: string }
   | { type: "SET_BLACK_PLAYER"; blackPlayer: string }
   | { type: "SET_WHITE_PLAYER"; whitePlayer: string }
+  | { type: "SET_GAME_DATE"; gameDate: string }
+  | { type: "SET_GAME_RESULT"; gameResult: string }
+  | { type: "SET_KOMI"; komi: string }
   | { type: "TAKE_SNAPSHOT" }
   | { type: "IMPORT_SGF"; sgf: string };
 
@@ -46,6 +49,9 @@ type Operation = {
   setIncrement: (point: Point) => void;
   removeText: (point: Point) => void;
   setGameName: (gn: string) => void;
+  setGameDate: (gd: string) => void;
+  setGameResult: (re: string) => void;
+  setKomi: (komi: string) => void;
   setComment: (comment: string) => void;
   setBlackPlayer: (bp: string) => void;
   setWhitePlayer: (wp: string) => void;
@@ -99,6 +105,15 @@ const useGennanCore = ({
         break;
       case "SET_GAME_NAME":
         cloned.setGameName(action.gameName);
+        break;
+      case "SET_GAME_DATE":
+        cloned.setGameDate(action.gameDate);
+        break;
+      case "SET_GAME_RESULT":
+        cloned.setGameResult(action.gameResult);
+        break;
+      case "SET_KOMI":
+        cloned.setKomi(action.komi);
         break;
       case "SET_COMMENT":
         cloned.setComment(action.comment);
@@ -179,6 +194,15 @@ const useGennanCore = ({
   const setGameName = (gameName: string): void => {
     dispatch({ type: "SET_GAME_NAME", gameName });
   };
+  const setGameDate = (gameDate: string): void => {
+    dispatch({ type: "SET_GAME_DATE", gameDate });
+  };
+  const setGameResult = (gameResult: string): void => {
+    dispatch({ type: "SET_GAME_RESULT", gameResult });
+  };
+  const setKomi = (komi: string): void => {
+    dispatch({ type: "SET_KOMI", komi });
+  };
   const setComment = (comment: string): void => {
     dispatch({ type: "SET_COMMENT", comment });
   };
@@ -210,6 +234,9 @@ const useGennanCore = ({
       setIncrement,
       removeText,
       setGameName,
+      setGameDate,
+      setGameResult,
+      setKomi,
       setComment,
       setBlackPlayer,
       setWhitePlayer,

@@ -193,6 +193,9 @@ type Props = {
   fulcrumPoint?: Point;
   viewBoard: ViewBoard;
   gameName?: string;
+  gameDate?: string;
+  gameResult?: string;
+  komi?: string;
   blackPlayer?: string;
   whitePlayer?: string;
   comment?: string;
@@ -201,6 +204,9 @@ type Props = {
   isTurnedPlayIconActive: boolean;
   handleCommentChange: (c: string) => void;
   handleGameNameChange: (gn: string) => void;
+  handleGameDateChange: (gd: string) => void;
+  handleGameResultChange: (result: string) => void;
+  handleKomiChange: (komi: string) => void;
   handleBlackPlayerChange: (p: string) => void;
   handleWhitePlayerChange: (p: string) => void;
   onClickPoint?: (p: Point) => void;
@@ -234,6 +240,9 @@ export const Presenter: FC<Props> = ({
   fulcrumPoint = { x: 1, y: 1 },
   viewBoard,
   gameName = "",
+  gameDate = "",
+  gameResult = "",
+  komi = "",
   blackPlayer = "",
   whitePlayer = "",
   comment = "",
@@ -242,6 +251,9 @@ export const Presenter: FC<Props> = ({
   isTurnedPlayIconActive,
   handleCommentChange,
   handleGameNameChange,
+  handleGameDateChange,
+  handleGameResultChange,
+  handleKomiChange,
   handleBlackPlayerChange,
   handleWhitePlayerChange,
   onClickPoint = () => {},
@@ -558,9 +570,15 @@ export const Presenter: FC<Props> = ({
           >
             <GameInfoOverlay
               gameName={gameName}
+              gameDate={gameDate}
+              gameResult={gameResult}
+              komi={komi}
               blackPlayer={blackPlayer}
               whitePlayer={whitePlayer}
               onGameNameChange={handleGameNameChange}
+              onGameDateChange={handleGameDateChange}
+              onGameResultChange={handleGameResultChange}
+              onKomiChange={handleKomiChange}
               onBlackPlayerChange={handleBlackPlayerChange}
               onWhitePlayerChange={handleWhitePlayerChange}
               isEditable={mode !== Mode.View}

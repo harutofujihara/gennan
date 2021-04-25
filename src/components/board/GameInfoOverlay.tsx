@@ -36,6 +36,12 @@ const Input: FC<InputProps> = memo(
 type Props = {
   gameName: string;
   onGameNameChange?: (v: string) => void;
+  gameDate: string;
+  onGameDateChange?: (v: string) => void;
+  gameResult: string;
+  onGameResultChange?: (v: string) => void;
+  komi: string;
+  onKomiChange?: (v: string) => void;
   blackPlayer: string;
   onBlackPlayerChange?: (v: string) => void;
   whitePlayer: string;
@@ -47,6 +53,12 @@ export const GameInfoOverlay: FC<Props> = memo(
   ({
     gameName,
     onGameNameChange,
+    gameDate,
+    onGameDateChange,
+    gameResult,
+    onGameResultChange,
+    komi,
+    onKomiChange,
     blackPlayer,
     onBlackPlayerChange,
     whitePlayer,
@@ -75,21 +87,45 @@ export const GameInfoOverlay: FC<Props> = memo(
               defaultValue={gameName}
               onChange={onGameNameChange}
               disabled={!isEditable}
-              placeholder="Meijinsen"
+              placeholder="Ear-reddening game"
             />
+            <label style={{ color: "white" }}>Game date</label>
+            <Input
+              defaultValue={gameDate}
+              onChange={onGameDateChange}
+              disabled={!isEditable}
+              placeholder="1846-09-11"
+            />
+
             <label style={{ color: "white" }}>Black player</label>
             <Input
               defaultValue={blackPlayer}
               onChange={onBlackPlayerChange}
               disabled={!isEditable}
-              placeholder="Shindo Hikaru"
+              placeholder="Honinbo Shusaku"
             />
             <label style={{ color: "white" }}>White player</label>
             <Input
               defaultValue={whitePlayer}
               onChange={onWhitePlayerChange}
               disabled={!isEditable}
-              placeholder="Fujiwarano sai"
+              placeholder="Gennan Inseki"
+            />
+
+            <label style={{ color: "white" }}>Komi</label>
+            <Input
+              defaultValue={komi}
+              onChange={onKomiChange}
+              disabled={!isEditable}
+              placeholder="0"
+            />
+
+            <label style={{ color: "white" }}>Game result</label>
+            <Input
+              defaultValue={gameResult}
+              onChange={onGameResultChange}
+              disabled={!isEditable}
+              placeholder="ex. B+2(Black win two points), W+R(White win by resignation)"
             />
           </form>
         </div>
