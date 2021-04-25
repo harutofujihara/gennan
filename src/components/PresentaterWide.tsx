@@ -20,6 +20,9 @@ type Props = {
   fulcrumPoint: Point;
   viewBoard: ViewBoard;
   gameName?: string;
+  gameDate?: string;
+  gameResult?: string;
+  komi?: string;
   blackPlayer?: string;
   whitePlayer?: string;
   comment?: string;
@@ -45,6 +48,9 @@ export const PresenterWide: FC<Props> = ({
   fulcrumPoint = { x: 1, y: 1 },
   viewBoard,
   gameName = "",
+  gameDate = "",
+  gameResult = "",
+  komi = "",
   blackPlayer = "",
   whitePlayer = "",
   comment = "",
@@ -208,6 +214,9 @@ export const PresenterWide: FC<Props> = ({
             >
               <GameInfoOverlay
                 gameName={gameName}
+                gameDate={gameDate}
+                gameResult={gameResult}
+                komi={komi}
                 blackPlayer={blackPlayer}
                 whitePlayer={whitePlayer}
               />

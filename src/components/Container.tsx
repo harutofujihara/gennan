@@ -109,6 +109,9 @@ export const Container: FC<Props> = ({
       setIncrement,
       removeText,
       setGameName,
+      setGameDate,
+      setGameResult,
+      setKomi,
       setComment,
       setBlackPlayer,
       setWhitePlayer,
@@ -358,6 +361,9 @@ export const Container: FC<Props> = ({
         viewBoard={gnc.viewBoard}
         handlePointClicked={handlePointClicked}
         gameName={gnc.gameName}
+        gameDate={gnc.gameDate}
+        gameResult={gnc.gameResult}
+        komi={gnc.komi}
         blackPlayer={gnc.blackPlayer}
         whitePlayer={gnc.whitePlayer}
         comment={gnc.comment}
@@ -437,6 +443,9 @@ export const Container: FC<Props> = ({
           editModeInfos={editModeInfos}
           viewBoard={gnc.viewBoard}
           gameName={gnc.gameName}
+          gameDate={gnc.gameDate}
+          gameResult={gnc.gameResult}
+          komi={gnc.komi}
           blackPlayer={gnc.blackPlayer}
           whitePlayer={gnc.whitePlayer}
           comment={gnc.comment}
@@ -447,6 +456,9 @@ export const Container: FC<Props> = ({
           fulcrumPoint={fulcrumPoint}
           handleCommentChange={setComment}
           handleGameNameChange={setGameName}
+          handleGameDateChange={setGameDate}
+          handleGameResultChange={setGameResult}
+          handleKomiChange={setKomi}
           handleBlackPlayerChange={setBlackPlayer}
           handleWhitePlayerChange={setWhitePlayer}
           onClickPoint={handlePointClicked}
