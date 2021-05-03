@@ -9,6 +9,8 @@ const MarkupMode = {
 
 const EditMoveMode = {
   Move: "Move",
+  BlackMove: "BlackMove",
+  WhiteMove: "WhiteMove",
   // Pass: "Pass",
 } as const;
 
