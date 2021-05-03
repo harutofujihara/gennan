@@ -213,6 +213,32 @@ export const Container: FC<Props> = ({
               }
             }
             break;
+          case EditMoveMode.BlackMove:
+            if (gnc.viewBoard[point.x - 1][point.y - 1].color == null) {
+              const nextOption = gnc.nextMoveOptions.find((no) => {
+                const { point: p } = no.move;
+                return p != null && p.x === point.x && p.y === point.y;
+              });
+              if (nextOption != null) {
+                forward(nextOption.idx);
+              } else {
+                addMove({ color: Color.Black, point });
+              }
+            }
+            break;
+          case EditMoveMode.WhiteMove:
+            if (gnc.viewBoard[point.x - 1][point.y - 1].color == null) {
+              const nextOption = gnc.nextMoveOptions.find((no) => {
+                const { point: p } = no.move;
+                return p != null && p.x === point.x && p.y === point.y;
+              });
+              if (nextOption != null) {
+                forward(nextOption.idx);
+              } else {
+                addMove({ color: Color.White, point });
+              }
+            }
+            break;
           case MarkupMode.Circle:
             if (gnc.viewBoard[point.x - 1][point.y - 1].circle) {
               removeSymbol(point, MarkupSymbol.Circle);

@@ -146,6 +146,7 @@ const EditModeIcons: Array<{ el: JSX.Element; em: EditMode }> = [
     el: <FontAwesomeIcon icon={faCircle} />,
     em: MarkupMode.Circle,
   },
+
   {
     el: <FontAwesomeIcon icon={faSquare} />,
     em: MarkupMode.Square,
@@ -167,8 +168,44 @@ const EditModeIcons: Array<{ el: JSX.Element; em: EditMode }> = [
     em: MarkupMode.Num,
   },
   {
-    el: <FontAwesomeIcon icon={faHandPointUp} color="black" />,
+    // el: <FontAwesomeIcon icon={faHandPointUp} color="black" />,
+    el: (
+      <FontAwesomeIcon
+        icon={faCircle}
+        style={{
+          color: "transparent",
+          background:
+            "linear-gradient(to top, #ffffff 0%, #ffffff 50%, #000000 50%, #000000 100%)",
+          borderRadius: "50%",
+        }}
+      />
+    ),
     em: EditMoveMode.Move,
+  },
+  {
+    el: (
+      <FontAwesomeIcon
+        icon={faCircle}
+        style={{
+          background: "black",
+          borderRadius: "50%",
+        }}
+      />
+    ),
+    em: EditMoveMode.BlackMove,
+  },
+  {
+    el: (
+      <FontAwesomeIcon
+        icon={faCircle}
+        style={{
+          color: "white",
+          background: "white",
+          borderRadius: "50%",
+        }}
+      />
+    ),
+    em: EditMoveMode.WhiteMove,
   },
   {
     el: <FontAwesomeIcon icon={faFillCircle} color="black" />,
@@ -668,7 +705,7 @@ export const Presenter: FC<Props> = ({
             right: "0",
           }}
         >
-          {splitArr(EditModeButtons, 4).map((ems, i) => (
+          {splitArr(EditModeButtons, 5).map((ems, i) => (
             <p style={{ margin: 0, lineHeight: 0 }} key={i}>
               {Array.isArray(ems) && ems.map((em) => em)}
             </p>

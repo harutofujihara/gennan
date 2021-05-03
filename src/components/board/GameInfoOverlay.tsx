@@ -87,14 +87,14 @@ export const GameInfoOverlay: FC<Props> = memo(
               defaultValue={gameName}
               onChange={onGameNameChange}
               disabled={!isEditable}
-              placeholder="Ear-reddening game"
+              placeholder={isEditable ? "Ear-reddening game" : undefined}
             />
             <label style={{ color: "white" }}>Game date</label>
             <Input
               defaultValue={gameDate}
               onChange={onGameDateChange}
               disabled={!isEditable}
-              placeholder="1846-09-11"
+              placeholder={isEditable ? "1846-09-11" : undefined}
             />
 
             <label style={{ color: "white" }}>Black player</label>
@@ -102,14 +102,14 @@ export const GameInfoOverlay: FC<Props> = memo(
               defaultValue={blackPlayer}
               onChange={onBlackPlayerChange}
               disabled={!isEditable}
-              placeholder="Honinbo Shusaku"
+              placeholder={isEditable ? "Honinbo Shusaku" : undefined}
             />
             <label style={{ color: "white" }}>White player</label>
             <Input
               defaultValue={whitePlayer}
               onChange={onWhitePlayerChange}
               disabled={!isEditable}
-              placeholder="Gennan Inseki"
+              placeholder={isEditable ? "Gennan Inseki" : undefined}
             />
 
             <label style={{ color: "white" }}>Komi</label>
@@ -117,7 +117,7 @@ export const GameInfoOverlay: FC<Props> = memo(
               defaultValue={komi}
               onChange={onKomiChange}
               disabled={!isEditable}
-              placeholder="0"
+              placeholder={isEditable ? "0" : undefined}
             />
 
             <label style={{ color: "white" }}>Game result</label>
@@ -125,7 +125,11 @@ export const GameInfoOverlay: FC<Props> = memo(
               defaultValue={gameResult}
               onChange={onGameResultChange}
               disabled={!isEditable}
-              placeholder="ex. B+2(Black win two points), W+R(White win by resignation)"
+              placeholder={
+                isEditable
+                  ? "ex. B+2(Black win two points), W+R(White win by resignation)"
+                  : undefined
+              }
             />
           </form>
         </div>
