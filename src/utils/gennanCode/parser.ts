@@ -8,16 +8,35 @@ function parseGennanCodeToParams(
   fulcrumPoint?: Point;
   sideCount?: number;
 } {
-  const splitted = gennanCode.split(",");
-  const sgf = splitted[0] ? splitted[0] : undefined;
-  const initPath = splitted[1] ? parseInitialPath(splitted[1]) : undefined;
-  const fulcrumPoint = splitted[2]
+  // SGFの中に','が混ざっていても問題ないように後ろからパースする
+  let remainCode = gennanCode;
+  const sideCountStr = remainCode.slice(
+    remainCode.lastIndexOf(",") + 1,
+    remainCode.length
+  );
+  remainCode = remainCode.slice(0, remainCode.lastIndexOf(","));
+  const sideCount = sideCountStr ? Number(sideCountStr) : undefined;
+
+  const fulcrumPointStr = remainCode.slice(
+    remainCode.lastIndexOf(",") + 1,
+    remainCode.length
+  );
+  remainCode = remainCode.slice(0, remainCode.lastIndexOf(","));
+  const fulcrumPoint = fulcrumPointStr
     ? {
-        x: Number(splitted[2].split(":")[0]),
-        y: Number(splitted[2].split(":")[1]),
+        x: Number(fulcrumPointStr.split(":")[0]),
+        y: Number(fulcrumPointStr.split(":")[1]),
       }
     : undefined;
-  const sideCount = splitted[3] ? Number(splitted[3]) : undefined;
+
+  const initPathStr = remainCode.slice(
+    remainCode.lastIndexOf(",") + 1,
+    remainCode.length
+  );
+  remainCode = remainCode.slice(0, remainCode.lastIndexOf(","));
+  const initPath = initPathStr ? parseInitialPath(initPathStr) : undefined;
+
+  const sgf = remainCode ? remainCode : undefined;
 
   return { sgf, initPath, fulcrumPoint, sideCount };
 }

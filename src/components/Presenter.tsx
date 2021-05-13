@@ -320,13 +320,9 @@ export const Presenter: FC<Props> = ({
   const [boardContainerWidthPx] = useResizeObserver(ref);
   const [isBoardOverlayVisible, setIsBoardOverlayVisible] = useState(false);
 
-  // const oneSquarePx = boardContainerWidthPx / (sideNum + 1);
   const oneSquarePx = isScaleVisible
     ? boardContainerWidthPx / (sideNum + 1)
     : boardContainerWidthPx / sideNum;
-  // const boardWidthPx = isScaleVisible
-  //   ? oneSquarePx * sideNum
-  //   : boardContainerWidthPx;
   const boardWidthPx = oneSquarePx * sideNum;
   const VerticalScale: JSX.Element = (
     <>
@@ -687,7 +683,7 @@ export const Presenter: FC<Props> = ({
               fontSize: `${boardContainerWidthPx / 26}px`,
             }}
           >
-            The following characters are not allowed.()[],
+            The following characters are not allowed. "[" "]"
           </p>
         )}
       </div>
