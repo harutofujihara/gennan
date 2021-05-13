@@ -130,12 +130,21 @@ export const Container: FC<Props> = ({
   // 拡大用パラメータ
   // 始点から得られる最大の正方形 or 始点から与えられた幅の正方形
   const [fulcrumPoint, setFulcrumPoint] = useState(fulcrumP);
+
   const minSide = Math.min(
     gnc.viewBoard.length - fulcrumPoint.x + 1,
     gnc.viewBoard.length - fulcrumPoint.y + 1
   );
+
   const sCount = sideC || gnc.viewBoard.length;
   const [sideNum, setSideNum] = useState(minSide >= sCount ? sCount : minSide);
+
+  // sgfをimportした時に
+  // 路数の違う棋譜だった場合、縮尺をイニシャライズする
+  useEffect(() => {
+    setFulcrumPoint({ x: 1, y: 1 });
+    setSideNum(gnc.gridNum);
+  }, [gnc.gridNum]);
 
   // 編集モードの一覧と状態
   const editModeInfos: Array<EditModeInfo> = [];
