@@ -178,6 +178,7 @@ export const PresenterWide: FC<Props> = ({
             margin: `0 ${containerWidth * 0.02}px`,
             overflow: "scroll",
             fontSize: `${containerWidth / 28}px`,
+            whiteSpace: "pre-wrap",
           }}
         >
           {comment}
