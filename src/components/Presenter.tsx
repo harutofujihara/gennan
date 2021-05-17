@@ -465,6 +465,7 @@ export const Presenter: FC<Props> = ({
         ref={inputFileRef}
         style={{ display: "none" }}
         onChange={onFileChange}
+        accept=".sgf,text/plain"
       />
 
       <div
