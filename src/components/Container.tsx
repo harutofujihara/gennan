@@ -139,11 +139,15 @@ export const Container: FC<Props> = ({
   const sCount = sideC || gnc.viewBoard.length;
   const [sideNum, setSideNum] = useState(minSide >= sCount ? sCount : minSide);
 
+  // only updated(not mounted)
   // sgfをimportした時に
   // 路数の違う棋譜だった場合、縮尺をイニシャライズする
+  const mounted = useRef(false);
   useEffect(() => {
-    setFulcrumPoint({ x: 1, y: 1 });
-    setSideNum(gnc.gridNum);
+    if (mounted.current) {
+      setFulcrumPoint({ x: 1, y: 1 });
+      setSideNum(gnc.gridNum);
+    } else mounted.current = true;
   }, [gnc.gridNum]);
 
   // 編集モードの一覧と状態
