@@ -43,6 +43,8 @@ import {
   faArrowLeft,
   faImage,
   faCamera,
+  faChevronRight,
+  faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faSquare,
@@ -248,8 +250,10 @@ type Props = {
   handleWhitePlayerChange: (p: string) => void;
   onClickPoint?: (p: Point) => void;
   onClickUndoIcon: () => void;
-  onClickPlayIcon: () => void;
-  onClickTurnedPlayIcon: () => void;
+  playForward: () => void;
+  playForwardTimes: () => void;
+  playBackward: () => void;
+  playBackwardTimes: () => void;
   onClickNextButton: () => void;
   startSelectMagnification: () => void;
   cancelSelectMagnification: () => void;
@@ -295,8 +299,10 @@ export const Presenter: FC<Props> = ({
   handleWhitePlayerChange,
   onClickPoint = () => {},
   onClickUndoIcon,
-  onClickPlayIcon,
-  onClickTurnedPlayIcon,
+  playForward,
+  playForwardTimes,
+  playBackward,
+  playBackwardTimes,
   onClickNextButton,
   startSelectMagnification,
   cancelSelectMagnification,
@@ -745,29 +751,55 @@ export const Presenter: FC<Props> = ({
         {(mode === Mode.View || mode === Mode.EditMoves) && (
           <>
             <FontAwesomeIcon
+              icon={faChevronLeft}
+              style={{
+                fontSize: `${boardContainerWidthPx / 10}px`,
+                position: "absolute",
+                left: (6.5 / 30) * boardContainerWidthPx + "px",
+                bottom: 0.015 * boardContainerWidthPx + "px",
+                userSelect: "none",
+                opacity: isTurnedPlayIconActive ? 1 : 0.5,
+                cursor: "pointer",
+              }}
+              onClick={playBackwardTimes}
+            />
+            <FontAwesomeIcon
               icon={faPlay}
               rotation={180}
               style={{
                 fontSize: `${boardContainerWidthPx / 9}px`,
                 position: "absolute",
-                left: (15 / 40) * boardContainerWidthPx + "px",
+                left: (12.5 / 40) * boardContainerWidthPx + "px",
                 userSelect: "none",
                 opacity: isTurnedPlayIconActive ? 1 : 0.5,
                 cursor: "pointer",
               }}
-              onClick={onClickTurnedPlayIcon}
+              onClick={playBackward}
             />
             <FontAwesomeIcon
               icon={faPlay}
               style={{
                 fontSize: `${boardContainerWidthPx / 9}px`,
                 position: "absolute",
-                left: (16 / 30) * boardContainerWidthPx + "px",
+                left: (13.5 / 30) * boardContainerWidthPx + "px",
                 userSelect: "none",
                 opacity: isPlayIconActive ? 1 : 0.5,
                 cursor: "pointer",
               }}
-              onClick={onClickPlayIcon}
+              onClick={playForward}
+            />
+            <FontAwesomeIcon
+              icon={faChevronRight}
+              style={{
+                fontSize: `${boardContainerWidthPx / 10}px`,
+                position: "absolute",
+                left: (17.5 / 30) * boardContainerWidthPx + "px",
+                bottom: 0.015 * boardContainerWidthPx + "px",
+                userSelect: "none",
+                opacity: isPlayIconActive ? 1 : 0.5,
+                cursor: "pointer",
+              }}
+              onClick={playForwardTimes}
             />
           </>
         )}

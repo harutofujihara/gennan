@@ -98,7 +98,9 @@ export const Container: FC<Props> = ({
     gnc,
     {
       forward,
+      forwardTimes,
       backward,
+      backwardTimes,
       addFixedStone,
       removeFixedStone,
       addMove,
@@ -391,31 +393,38 @@ export const Container: FC<Props> = ({
     await downloadBoardImg(gnc.gameName ? gnc.gameName : "image" + ".png");
   };
 
+  const playForward = () => gnc.existsNextMove && forward(0);
+  const playBackward = () => gnc.existsBackMove && backward();
+
   // render
   if (usage === "viewWide") {
     return (
-      <PresenterWide
-        isScaleVisible={isScaleVisible}
-        toggleIsScaleVisible={toggleIsScaleVisible}
-        viewBoard={gnc.viewBoard}
-        handlePointClicked={handlePointClicked}
-        gameName={gnc.gameName}
-        gameDate={gnc.gameDate}
-        gameResult={gnc.gameResult}
-        komi={gnc.komi}
-        blackPlayer={gnc.blackPlayer}
-        whitePlayer={gnc.whitePlayer}
-        comment={gnc.comment}
-        onPlayIconClicked={() => gnc.existsNextMove() && forward(0)}
-        onTurnedPlayIconClicked={() => gnc.existsBackMove() && backward()}
-        isPlayIconActive={gnc.existsNextMove()}
-        isTurnedPlayIconActive={gnc.existsBackMove()}
-        sideNum={sideNum}
-        fulcrumPoint={fulcrumPoint}
-        downloadSgf={onDownloadSgf}
-        svgBoardRef={svgBoardRef}
-        downloadBoardImage={downloadBoardImage}
-      />
+      <>
+        <PresenterWide
+          isScaleVisible={isScaleVisible}
+          toggleIsScaleVisible={toggleIsScaleVisible}
+          viewBoard={gnc.viewBoard}
+          handlePointClicked={handlePointClicked}
+          gameName={gnc.gameName}
+          gameDate={gnc.gameDate}
+          gameResult={gnc.gameResult}
+          komi={gnc.komi}
+          blackPlayer={gnc.blackPlayer}
+          whitePlayer={gnc.whitePlayer}
+          comment={gnc.comment}
+          playForward={playForward}
+          playForwardTimes={() => forwardTimes()}
+          playBackward={playBackward}
+          playBackwardTimes={() => backwardTimes()}
+          isPlayIconActive={gnc.existsNextMove}
+          isTurnedPlayIconActive={gnc.existsBackMove}
+          sideNum={sideNum}
+          fulcrumPoint={fulcrumPoint}
+          downloadSgf={onDownloadSgf}
+          svgBoardRef={svgBoardRef}
+          downloadBoardImage={downloadBoardImage}
+        />
+      </>
     );
   } else {
     const [isPreviewing, setIsPreviewing] = useState(false);
@@ -488,9 +497,9 @@ export const Container: FC<Props> = ({
           blackPlayer={gnc.blackPlayer}
           whitePlayer={gnc.whitePlayer}
           comment={gnc.comment}
-          isUndoIconActive={!gnc.existsNextMove()}
-          isPlayIconActive={gnc.existsNextMove()}
-          isTurnedPlayIconActive={gnc.existsBackMove()}
+          isUndoIconActive={!gnc.existsNextMove}
+          isPlayIconActive={gnc.existsNextMove}
+          isTurnedPlayIconActive={gnc.existsBackMove}
           sideNum={sideNum}
           fulcrumPoint={fulcrumPoint}
           handleCommentChange={setComment}
@@ -501,9 +510,11 @@ export const Container: FC<Props> = ({
           handleBlackPlayerChange={setBlackPlayer}
           handleWhitePlayerChange={setWhitePlayer}
           onClickPoint={handlePointClicked}
-          onClickUndoIcon={() => !gnc.existsNextMove() && removeMove()}
-          onClickPlayIcon={() => gnc.existsNextMove() && forward(0)}
-          onClickTurnedPlayIcon={() => gnc.existsBackMove() && backward()}
+          onClickUndoIcon={() => !gnc.existsNextMove && removeMove()}
+          playForward={playForward}
+          playForwardTimes={() => forwardTimes()}
+          playBackward={playBackward}
+          playBackwardTimes={() => backwardTimes()}
           onClickNextButton={() => {
             setMode(Mode.EditMoves);
             setEditMode(EditMoveMode.Move);
