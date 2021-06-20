@@ -92,8 +92,14 @@ const useGennanCore = ({
         cloned.removeFixedStone(action.stone);
         break;
       case "ADD_MOVE":
-        cloned.addMove(action.move);
-        cloned.playForward(cloned.nextMoveOptions.length - 1);
+        try {
+          // コウ立てせずにコウ地点をクリックした時などのためのハンドリング
+          cloned.addMove(action.move);
+          cloned.playForward(cloned.nextMoveOptions.length - 1);
+        } catch (error) {
+          console.log(error);
+        }
+
         break;
       case "REMOVE_MOVE":
         cloned.removeMove();
