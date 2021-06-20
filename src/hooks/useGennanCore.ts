@@ -16,7 +16,9 @@ type Args = {
 
 type Action =
   | { type: "FORWARD"; idx: number }
+  | { type: "FORWARD_TIMES"; times: number }
   | { type: "BACKWARD" }
+  | { type: "BACKWARD_TIMES"; times: number }
   | { type: "ADD_FIXED_STONE"; stone: Stone }
   | { type: "REMOVE_FIXED_STONE"; stone: Stone }
   | { type: "ADD_MOVE"; move: Move }
@@ -38,7 +40,9 @@ type Action =
 
 type Operation = {
   forward: (i: number) => void;
+  forwardTimes: (times?: number) => void;
   backward: () => void;
+  backwardTimes: (times?: number) => void;
   addFixedStone: (stone: Stone) => void;
   removeFixedStone: (stone: Stone) => void;
   addMove: (move: Move) => void;
@@ -72,8 +76,14 @@ const useGennanCore = ({
       case "FORWARD":
         cloned.playForward(action.idx);
         break;
+      case "FORWARD_TIMES":
+        cloned.playForwardTimes(action.times);
+        break;
       case "BACKWARD":
         cloned.playBackward();
+        break;
+      case "BACKWARD_TIMES":
+        cloned.playBackwardTimes(action.times);
         break;
       case "ADD_FIXED_STONE":
         cloned.addFixedStone(action.stone);
@@ -159,8 +169,14 @@ const useGennanCore = ({
   const forward = (idx: number = 0): void => {
     dispatch({ type: "FORWARD", idx });
   };
+  const forwardTimes = (times: number = 10): void => {
+    dispatch({ type: "FORWARD_TIMES", times });
+  };
   const backward = (): void => {
     dispatch({ type: "BACKWARD" });
+  };
+  const backwardTimes = (times: number = 10): void => {
+    dispatch({ type: "BACKWARD_TIMES", times });
   };
 
   // edit
@@ -223,7 +239,9 @@ const useGennanCore = ({
     gnc,
     {
       forward,
+      forwardTimes,
       backward,
+      backwardTimes,
       addFixedStone,
       removeFixedStone,
       addMove,

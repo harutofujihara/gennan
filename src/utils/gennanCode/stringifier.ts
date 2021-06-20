@@ -7,7 +7,7 @@ function stringifyGennanCode(params: {
 }): string {
   const sgfStr = params.gnc ? params.gnc.sgf : "";
   const pathStr = params.gnc
-    ? toInitPathString(params.gnc.currentPath, !params.gnc.existsNextMove())
+    ? toInitPathString(params.gnc.currentPath, !params.gnc.existsNextMove)
     : [];
   const fulcrumPointStr = params.fulcrumPoint
     ? params.fulcrumPoint.x + ":" + params.fulcrumPoint.y

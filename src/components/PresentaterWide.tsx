@@ -8,6 +8,8 @@ import {
   faExpand,
   faDownload,
   faCamera,
+  faChevronLeft,
+  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { useResizeObserver } from "../hooks/useResizeObserver";
 import { BoardContainer, BoardContent } from "./board/BoardContainer";
@@ -26,8 +28,10 @@ type Props = {
   blackPlayer?: string;
   whitePlayer?: string;
   comment?: string;
-  onPlayIconClicked?: () => void;
-  onTurnedPlayIconClicked?: () => void;
+  playForward?: () => void;
+  playForwardTimes?: () => void;
+  playBackward?: () => void;
+  playBackwardTimes?: () => void;
   isPlayIconActive?: boolean;
   isTurnedPlayIconActive?: boolean;
   isScaleVisible?: boolean;
@@ -54,8 +58,10 @@ export const PresenterWide: FC<Props> = ({
   blackPlayer = "",
   whitePlayer = "",
   comment = "",
-  onPlayIconClicked,
-  onTurnedPlayIconClicked,
+  playForward,
+  playForwardTimes,
+  playBackward,
+  playBackwardTimes,
   isPlayIconActive = true,
   isTurnedPlayIconActive = false,
   isScaleVisible = false,
@@ -66,7 +72,7 @@ export const PresenterWide: FC<Props> = ({
 }: Props) => {
   const ref = useRef(null);
   const [containerWidth] = useResizeObserver(ref);
-  const boardContainerWidthPx = containerWidth * 0.7;
+  const boardContainerWidthPx = containerWidth * 0.65;
   const [isBoardOverlayVisible, setIsBoardOverlayVisible] = useState(false);
   const oneSquarePx = isScaleVisible
     ? boardContainerWidthPx / (sideNum + 1)
@@ -120,23 +126,11 @@ export const PresenterWide: FC<Props> = ({
     <div ref={ref} style={{ height: boardContainerWidthPx + "px" }}>
       <div style={{ position: "relative" }}>
         <FontAwesomeIcon
-          icon={faInfoCircle}
-          style={{
-            fontSize: `${containerWidth / 12}px`,
-            position: "absolute",
-            right: containerWidth * 0.23 + "px",
-            transform: "translateX(50%)",
-            cursor: "pointer",
-          }}
-          onClick={() => setIsBoardOverlayVisible(!isBoardOverlayVisible)}
-        />
-
-        <FontAwesomeIcon
           icon={faCamera}
           style={{
             fontSize: `${containerWidth / 35}px`,
             position: "absolute",
-            right: containerWidth * 0.15 + "px",
+            right: containerWidth * 0.3 + "px",
             top: containerWidth * 0.05 + "px",
             transform: "translateX(50%)",
             cursor: "pointer",
@@ -148,13 +142,26 @@ export const PresenterWide: FC<Props> = ({
           style={{
             fontSize: `${containerWidth / 35}px`,
             position: "absolute",
-            right: containerWidth * 0.1 + "px",
+            right: containerWidth * 0.25 + "px",
             top: containerWidth * 0.05 + "px",
             transform: "translateX(50%)",
             cursor: "pointer",
           }}
           onClick={downloadSgf}
         />
+
+        <FontAwesomeIcon
+          icon={faInfoCircle}
+          style={{
+            fontSize: `${containerWidth / 12}px`,
+            position: "absolute",
+            right: containerWidth * 0.17 + "px",
+            transform: "translateX(50%)",
+            cursor: "pointer",
+          }}
+          onClick={() => setIsBoardOverlayVisible(!isBoardOverlayVisible)}
+        />
+
         <FontAwesomeIcon
           icon={isScaleVisible ? faExpand : faCompress}
           style={{
@@ -171,10 +178,10 @@ export const PresenterWide: FC<Props> = ({
         <p
           style={{
             position: "absolute",
-            left: containerWidth * 0.7 + "px",
+            left: containerWidth * 0.67 + "px",
             top: `${containerWidth / 10}px`,
-            width: containerWidth * 0.26 + "px",
-            height: containerWidth * 0.5 + "px",
+            width: containerWidth * 0.3 + "px",
+            height: containerWidth * 0.45 + "px",
             margin: `0 ${containerWidth * 0.02}px`,
             overflow: "scroll",
             fontSize: `${containerWidth / 28}px`,
@@ -226,18 +233,31 @@ export const PresenterWide: FC<Props> = ({
         </BoardContainer>
 
         <FontAwesomeIcon
+          icon={faChevronLeft}
+          style={{
+            fontSize: `${containerWidth / 13}px`,
+            position: "absolute",
+            bottom: "3px",
+            right: containerWidth * 0.29 + "px",
+            userSelect: "none",
+            opacity: isTurnedPlayIconActive ? 0.8 : 0.5,
+            cursor: "pointer",
+          }}
+          onClick={playBackwardTimes}
+        />
+        <FontAwesomeIcon
           icon={faPlay}
           rotation={180}
           style={{
             fontSize: `${containerWidth / 11}px`,
             position: "absolute",
             bottom: "1px",
-            right: containerWidth * 0.17 + "px",
+            right: containerWidth * 0.19 + "px",
             userSelect: "none",
             opacity: isTurnedPlayIconActive ? 1 : 0.5,
             cursor: "pointer",
           }}
-          onClick={onTurnedPlayIconClicked}
+          onClick={playBackward}
         />
         <FontAwesomeIcon
           icon={faPlay}
@@ -245,12 +265,25 @@ export const PresenterWide: FC<Props> = ({
             fontSize: `${containerWidth / 11}px`,
             position: "absolute",
             bottom: "1px",
-            right: containerWidth * 0.05 + "px",
+            right: containerWidth * 0.07 + "px",
             userSelect: "none",
             opacity: isPlayIconActive ? 1 : 0.5,
             cursor: "pointer",
           }}
-          onClick={onPlayIconClicked}
+          onClick={playForward}
+        />
+        <FontAwesomeIcon
+          icon={faChevronRight}
+          style={{
+            fontSize: `${containerWidth / 13}px`,
+            position: "absolute",
+            bottom: "1px",
+            right: containerWidth * 0 + "px",
+            userSelect: "none",
+            opacity: isPlayIconActive ? 0.8 : 0.5,
+            cursor: "pointer",
+          }}
+          onClick={playForwardTimes}
         />
       </div>
     </div>
