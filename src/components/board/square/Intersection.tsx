@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect } from "react";
-import { PointPosition } from "../Board";
+import { PointPosition } from "../SvgBoard";
 
 type Props = {
   cx: number;

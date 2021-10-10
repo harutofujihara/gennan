@@ -3,9 +3,9 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   mode: "development",
-  entry: "./dev/index.tsx",
+  entry: "./demo/src/index.tsx",
   output: {
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "demo/dist"),
     filename: "index.js",
     libraryTarget: "umd",
     globalObject: "this",
@@ -29,11 +29,11 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, "dev"),
     open: true,
-    port: 3000,
+    port: 3001,
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, "dev/index.html"),
+      template: path.resolve(__dirname, "demo/src/index.html"),
     }),
   ],
 };

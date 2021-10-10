@@ -1,16 +1,8 @@
 import { ViewPointState, Color, PointState } from "gennan-core";
 import React, { FC } from "react";
-import styled from "styled-components";
-import { toCircled } from "../../../utils";
-import { PointPosition } from "../Board";
+import { toCircled } from "../../../utils/utils";
+import { PointPosition } from "../SvgBoard";
 import { Intersection } from "./Intersection";
-
-// const Hovering = styled.a`
-//   opacity: 0;
-//   &:hover {
-//     opacity: 0.5;
-//   }
-// `;
 
 function trianglePoints(cx: number, cy: number, length: number): string {
   const h = Math.sqrt(length * length - (length / 2) * (length / 2));
@@ -54,9 +46,10 @@ export const Square: FC<Props> = ({
       )}
 
       {/* Star */}
-      {pointState.star && (
-        <circle fill="black" opacity="1" cx={cx} cy={cy} r={width / 10} />
-      )}
+      {pointState.star &&
+        !(isNextIdxVisible && pointState.nextIndex != null) && (
+          <circle fill="black" opacity="1" cx={cx} cy={cy} r={width / 10} />
+        )}
       {/* Stone */}
       {(pointState.color === Color.Black ||
         pointState.color === Color.White) && (

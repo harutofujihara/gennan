@@ -1,14 +1,15 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, Ref, useEffect, useRef, useState } from "react";
 import { ViewBoard, Point } from "gennan-core";
 import { Square } from "./square";
 
 type Props = {
   className?: string;
-  sideWidth: number;
+  widthPx: number;
   viewBoard: ViewBoard;
-  startPoint: Point;
+  fulcrumPoint: Point;
   sideNum: number;
   onClickPoint: (point: Point) => void;
+  boardRef: Ref<SVGSVGElement>;
 };
 
 export const PointPosition = {
@@ -24,13 +25,14 @@ export const PointPosition = {
 } as const;
 export type PointPosition = typeof PointPosition[keyof typeof PointPosition];
 
-export const Board: FC<Props> = ({
+export const SvgBoard: FC<Props> = ({
   viewBoard,
-  sideWidth,
+  widthPx,
   className,
-  startPoint,
+  fulcrumPoint,
   sideNum,
   onClickPoint,
+  boardRef,
 }: Props) => {
   const [squareWidth, setSquareWidth] = useState(0);
   const isNextIdxVisible = (): boolean => {
@@ -42,7 +44,7 @@ export const Board: FC<Props> = ({
   };
 
   useEffect(() => {
-    setSquareWidth(sideWidth / sideNum);
+    setSquareWidth(widthPx / sideNum);
   });
 
   const Squares = viewBoard
@@ -73,11 +75,11 @@ export const Board: FC<Props> = ({
         };
       });
     })
-    .filter((_, i) => startPoint.x - 1 <= i && i <= startPoint.x + sideNum) // x座標の拡大
+    .filter((_, i) => fulcrumPoint.x - 1 <= i && i <= fulcrumPoint.x + sideNum) // x座標の拡大
     .map(
       (v) =>
         v.filter(
-          (_, ii) => startPoint.y - 1 <= ii && ii <= startPoint.y + sideNum
+          (_, ii) => fulcrumPoint.y - 1 <= ii && ii <= fulcrumPoint.y + sideNum
         ) // y座標の拡大
     )
     .map((v, i) => {
@@ -107,8 +109,11 @@ export const Board: FC<Props> = ({
       version="1.1"
       baseProfile="full"
       xmlns="http://www.w3.org/2000/svg"
-      width="100%"
-      height="50%"
+      width={`${widthPx}px`}
+      height={`${widthPx}px`}
+      // width="100%"
+      // height="100%" // 絶対値で指定しないと画像変換の際にサイズを指定できない
+      ref={boardRef}
     >
       <rect width="100%" height="100%" fill="#f5be7e" stroke="black" />
       {Squares}
