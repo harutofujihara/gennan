@@ -9,6 +9,7 @@
     "lint-fix": "eslint --fix '**/*.{ts,tsx}' && prettier --write ./src/**/*.{ts,tsx}",
     "test": "jest",
     "dev": "webpack-cli serve --mode development --config webpack.dev.js",
+    "build:demo": "webpack --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js"
   },
   "repository": {
