@@ -22,7 +22,7 @@
   "bugs": {
     "url": "https://github.com/harutofujihara/gennan/issues"
   },
-  "homepage": "https://github.com/harutofujihara/gennan#readme",
+  "homepage": "https://harutofujihara.github.io/gennan/",
   "devDependencies": {
     "@types/jest": "^26.0.19",
     "@types/react": "^17.0.0",
