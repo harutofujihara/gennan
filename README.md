@@ -1,16 +1,5 @@
 # gennan
 
-### [Demo](https://harutofujihara.github.io/gennan/)
-
-## Install
-```sh
-$ npm install gennan
-```
-or
-```sh
-$ yarn add gennan
-```
-
 ## Usage
 ```js
 import React, { useState } from 'react';
