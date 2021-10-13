@@ -1,31 +1,315 @@
 import React, { FC, useState } from "react";
 import ReactDOM from "react-dom";
-import { Gennan } from "../../src";
+import { Gennan, Usage } from "../../src";
+import {
+  ChakraProvider,
+  Box,
+  Center,
+  Tabs,
+  Tab,
+  TabList,
+  TabPanels,
+  TabPanel,
+  Flex,
+  Link,
+  Code,
+  Textarea,
+  Heading,
+  Text,
+  Button,
+  Spacer,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogCloseButton,
+  AlertDialogFooter,
+  useDisclosure,
+  useBreakpointValue,
+  useClipboard,
+  useToast,
+} from "@chakra-ui/react";
+import { RepeatIcon, CopyIcon, ExternalLinkIcon } from "@chakra-ui/icons";
+import { v4 as uuidv4 } from "uuid";
+import { GennanCore, GridNum } from "gennan-core";
+
+export const initGennanCode = (gridNum: 9 | 13 | 19 = 19) =>
+  `(;FF[4]SZ[${gridNum}]CA[UTF-8]KM[6.5]),0,1:1,${gridNum}`;
+
 const App: FC = () => {
-  const [sgf, setSgf] = useState(
-    "(;FF[4]GN[Game name]GM[1]SZ[19]CA[UTF-8]PB[Ichiriki Ryo]PW[Xie Ke]KM[7.5]RE[W+R];B[qd]C[test1]TR[dd](;W[pp]C[test2]TR[dd];B[cd]C[test3]LB[qd:A][pp:B][aa:C];W[cp];B[eq];W[dq];B[ep];W[cn];B[ip];W[oc];B[fc];W[pe];B[qe];W[pf];B[qg];W[nq];B[ld];W[fd];B[gd];W[ec];B[ed];W[fe];B[dc];W[gc];B[eb];W[fb];B[pg];W[ec];B[do];W[co];B[fc];W[gq];B[hc];W[ec];B[op];W[oq];B[fc];W[qf];B[rf];W[ec];B[qp];W[po];B[fc];W[re];B[rd];W[ec];B[qo];W[ee];B[fc];W[rg];B[se];W[ec];B[pn];W[dd];B[pq];W[oo];B[pr];W[on];B[om];W[nm];B[pm];W[mn];B[ng];W[go];B[db];W[ce];B[gb];W[fc];B[bd];W[qq];B[rq];W[bb];B[be];W[cf];B[bf];W[ch];B[cg];W[dg];B[bg];W[di];B[ib];W[ea];B[cc];W[hn];B[jn];W[mc];B[lc];W[md];B[dm];W[hl];B[fo];W[fn];B[fm];W[en];B[dn];W[bl];B[cl];W[bk];B[ck];W[cj];B[gm];W[gn];B[ej];W[gj];B[ei];W[eh];B[gi];W[hi];B[dj];W[fi];B[bj];W[ci];B[bm];W[bi];B[cm];W[dr];B[er];W[eo];B[dp];W[br];B[el];W[hm];B[fk];W[or];B[qr];W[kp];B[lo];W[ln];B[kq];W[lp];B[hr];W[gr];B[lq];W[mp];B[hp];W[gp];B[jr];W[mr];B[lr];W[ks];B[nl];W[jp];B[le];W[qb];B[rb];W[pd];B[qc];W[mf];B[ll];W[mg];B[km];W[id];B[ie];W[da];B[df];W[de];B[ca];W[fa];B[cb];W[je];B[jd];W[jc];B[kd];W[ic];B[hd];W[he];B[if];W[jb];B[hb];W[ia];B[ge];W[gf];B[hf];W[ga];B[gg];W[ff];B[kg];W[nh];B[eg];W[dh];B[ki];W[jo];B[og];W[lh];B[kh];W[nf];B[oi];W[ni];B[nj];W[oh];B[pi];W[ha];B[lb];W[mj];B[mi];W[nk];B[li];W[mh];B[oj];W[ph];B[qh];W[qi];B[qj];W[ri];B[rh];W[mb];B[pb];W[ob];B[mm];W[he];B[nn];W[no];B[ao];W[bp];B[ih];W[hg];B[hh];W[gh];B[ds];W[cs];B[es];W[gs];B[fg];W[kk];B[jk];W[jj];B[ij];W[jl];B[ik];W[ok];B[pj];W[kl];B[il];W[lm];B[kn];W[nm];B[ma];W[na];B[nn];W[dk];B[gl];W[nm];B[ap];W[aq];B[nn];W[gk];B[em];W[nm];B[cq];W[lk];B[ml];W[mk];B[nn];W[mo])(;W[pq]))"
+  return (
+    // <div style={{ width: "40%", margin: "auto" }}>
+    <ChakraProvider>
+      <Page />
+    </ChakraProvider>
   );
-  const [path, setPath] = useState([0, 0]);
-  // console.log("")
+};
+
+const Page = () => {
+  const toast = useToast();
+
+  const [viewBoardGennanCode, setViewBoardGennanCode] = useState(
+    "(;FF[4]GN[Game name]GM[1]SZ[19]CA[UTF-8]PB[Ichiriki Ryo]PW[Xie Ke]KM[7.5]RE[W+R];B[qd]C[test1]TR[dd](;W[pp]C[test2]TR[dd];B[cd]C[test3]LB[qd:A][pp:B][aa:C];W[cp];B[eq];W[dq];B[ep];W[cn];B[ip];W[oc];B[fc];W[pe];B[qe];W[pf];B[qg];W[nq];B[ld];W[fd];B[gd];W[ec];B[ed];W[fe];B[dc];W[gc];B[eb];W[fb];B[pg];W[ec];B[do];W[co];B[fc];W[gq];B[hc];W[ec];B[op];W[oq];B[fc];W[qf];B[rf];W[ec];B[qp];W[po];B[fc];W[re];B[rd];W[ec];B[qo];W[ee];B[fc];W[rg];B[se];W[ec];B[pn];W[dd];B[pq];W[oo];B[pr];W[on];B[om];W[nm];B[pm];W[mn];B[ng];W[go];B[db];W[ce];B[gb];W[fc];B[bd];W[qq];B[rq];W[bb];B[be];W[cf];B[bf];W[ch];B[cg];W[dg];B[bg];W[di];B[ib];W[ea];B[cc];W[hn];B[jn];W[mc];B[lc];W[md];B[dm];W[hl];B[fo];W[fn];B[fm];W[en];B[dn];W[bl];B[cl];W[bk];B[ck];W[cj];B[gm];W[gn];B[ej];W[gj];B[ei];W[eh];B[gi];W[hi];B[dj];W[fi];B[bj];W[ci];B[bm];W[bi];B[cm];W[dr];B[er];W[eo];B[dp];W[br];B[el];W[hm];B[fk];W[or];B[qr];W[kp];B[lo];W[ln];B[kq];W[lp];B[hr];W[gr];B[lq];W[mp];B[hp];W[gp];B[jr];W[mr];B[lr];W[ks];B[nl];W[jp];B[le];W[qb];B[rb];W[pd];B[qc];W[mf];B[ll];W[mg];B[km];W[id];B[ie];W[da];B[df];W[de];B[ca];W[fa];B[cb];W[je];B[jd];W[jc];B[kd];W[ic];B[hd];W[he];B[if];W[jb];B[hb];W[ia];B[ge];W[gf];B[hf];W[ga];B[gg];W[ff];B[kg];W[nh];B[eg];W[dh];B[ki];W[jo];B[og];W[lh];B[kh];W[nf];B[oi];W[ni];B[nj];W[oh];B[pi];W[ha];B[lb];W[mj];B[mi];W[nk];B[li];W[mh];B[oj];W[ph];B[qh];W[qi];B[qj];W[ri];B[rh];W[mb];B[pb];W[ob];B[mm];W[he];B[nn];W[no];B[ao];W[bp];B[ih];W[hg];B[hh];W[gh];B[ds];W[cs];B[es];W[gs];B[fg];W[kk];B[jk];W[jj];B[ij];W[jl];B[ik];W[ok];B[pj];W[kl];B[il];W[lm];B[kn];W[nm];B[ma];W[na];B[nn];W[dk];B[gl];W[nm];B[ap];W[aq];B[nn];W[gk];B[em];W[nm];B[cq];W[lk];B[ml];W[mk];B[nn];W[mo])(;W[pq])),0,1:1,19"
+  );
+  const { onCopy: onCopyViewGC } = useClipboard(viewBoardGennanCode);
+  const onCopyViewBoardGennanCode = () => {
+    onCopyViewGC();
+    toast({
+      title: "Copied gennan code",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom-right",
+    });
+  };
+  const [viewBoardGennanKey, setViewBoardGennanKey] = useState(uuidv4());
+
+  const handleViewBoardGennanCodeChange = (e: any) => {
+    let inputValue = e.target.value;
+    setViewBoardGennanCode(inputValue);
+    setViewBoardGennanCode(inputValue);
+    setViewBoardGennanKey(uuidv4());
+  };
+
+  const [editBoardGennanCode, setEditBoardGennanCode] = useState(
+    "(;FF[4]GN[Game name]GM[1]SZ[19]CA[UTF-8]PB[Ichiriki Ryo]PW[Xie Ke]KM[7.5]RE[W+R];B[qd]C[test1]TR[dd](;W[pp]C[test2]TR[dd];B[cd]C[test3]LB[qd:A][pp:B][aa:C];W[cp];B[eq];W[dq];B[ep];W[cn];B[ip];W[oc];B[fc];W[pe];B[qe];W[pf];B[qg];W[nq];B[ld];W[fd];B[gd];W[ec];B[ed];W[fe];B[dc];W[gc];B[eb];W[fb];B[pg];W[ec];B[do];W[co];B[fc];W[gq];B[hc];W[ec];B[op];W[oq];B[fc];W[qf];B[rf];W[ec];B[qp];W[po];B[fc];W[re];B[rd];W[ec];B[qo];W[ee];B[fc];W[rg];B[se];W[ec];B[pn];W[dd];B[pq];W[oo];B[pr];W[on];B[om];W[nm];B[pm];W[mn];B[ng];W[go];B[db];W[ce];B[gb];W[fc];B[bd];W[qq];B[rq];W[bb];B[be];W[cf];B[bf];W[ch];B[cg];W[dg];B[bg];W[di];B[ib];W[ea];B[cc];W[hn];B[jn];W[mc];B[lc];W[md];B[dm];W[hl];B[fo];W[fn];B[fm];W[en];B[dn];W[bl];B[cl];W[bk];B[ck];W[cj];B[gm];W[gn];B[ej];W[gj];B[ei];W[eh];B[gi];W[hi];B[dj];W[fi];B[bj];W[ci];B[bm];W[bi];B[cm];W[dr];B[er];W[eo];B[dp];W[br];B[el];W[hm];B[fk];W[or];B[qr];W[kp];B[lo];W[ln];B[kq];W[lp];B[hr];W[gr];B[lq];W[mp];B[hp];W[gp];B[jr];W[mr];B[lr];W[ks];B[nl];W[jp];B[le];W[qb];B[rb];W[pd];B[qc];W[mf];B[ll];W[mg];B[km];W[id];B[ie];W[da];B[df];W[de];B[ca];W[fa];B[cb];W[je];B[jd];W[jc];B[kd];W[ic];B[hd];W[he];B[if];W[jb];B[hb];W[ia];B[ge];W[gf];B[hf];W[ga];B[gg];W[ff];B[kg];W[nh];B[eg];W[dh];B[ki];W[jo];B[og];W[lh];B[kh];W[nf];B[oi];W[ni];B[nj];W[oh];B[pi];W[ha];B[lb];W[mj];B[mi];W[nk];B[li];W[mh];B[oj];W[ph];B[qh];W[qi];B[qj];W[ri];B[rh];W[mb];B[pb];W[ob];B[mm];W[he];B[nn];W[no];B[ao];W[bp];B[ih];W[hg];B[hh];W[gh];B[ds];W[cs];B[es];W[gs];B[fg];W[kk];B[jk];W[jj];B[ij];W[jl];B[ik];W[ok];B[pj];W[kl];B[il];W[lm];B[kn];W[nm];B[ma];W[na];B[nn];W[dk];B[gl];W[nm];B[ap];W[aq];B[nn];W[gk];B[em];W[nm];B[cq];W[lk];B[ml];W[mk];B[nn];W[mo])(;W[pq])),0,1:1,19"
+  );
+  const { onCopy: onCopyEditGC } = useClipboard(editBoardGennanCode);
+  const onCopyEditBoardGennanCode = () => {
+    onCopyEditGC();
+    toast({
+      title: "Copied gennan code",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom-right",
+    });
+  };
+  const [editBoardGennanKey, setEditBoardGennanKey] = useState(uuidv4());
+  const [editBoardUsage, setEditBoardUsage] = useState<Usage>("edit");
+
+  const handleEditBoardGennanCodeChange = (e: any) => {
+    let inputValue = e.target.value;
+    setEditBoardGennanCode(inputValue);
+    setEditBoardGennanCode(inputValue);
+    setEditBoardUsage("edit");
+    setEditBoardGennanKey(uuidv4());
+  };
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = React.useRef();
+  const [gridNum, setGridNum] = useState<GridNum>(19);
+  const openInitBoardDialog = (gridNum: GridNum = 19) => {
+    setGridNum(gridNum);
+    onOpen();
+  };
+  const initBoard = () => {
+    setEditBoardGennanCode(initGennanCode(gridNum));
+    setEditBoardGennanKey(uuidv4());
+    setEditBoardUsage("new");
+    onClose();
+  };
+
+  // size
+  const isLargerThanSm = useBreakpointValue({ base: true });
+  const smOrMd = isLargerThanSm ? "md" : "sm";
 
   return (
-    <div style={{ width: "40%", margin: "auto" }}>
-      <Gennan
-        // gennanCode="(;FF[4]GN[Game name]GM[1]SZ[19]CA[UTF-8]PB[Ichiriki Ryo]PW[Xie Ke]KM[7.5]RE[W+R];B[qd]C[test1]TR[dd](;W[pp]C[test2]TR[dd];B[cd]C[test3]LB[qd:A][pp:B][aa:C];W[cp];B[eq];W[dq];B[ep];W[cn];B[ip];W[oc];B[fc];W[pe];B[qe];W[pf];B[qg];W[nq];B[ld];W[fd];B[gd];W[ec];B[ed];W[fe];B[dc];W[gc];B[eb];W[fb];B[pg];W[ec];B[do];W[co];B[fc];W[gq];B[hc];W[ec];B[op];W[oq];B[fc];W[qf];B[rf];W[ec];B[qp];W[po];B[fc];W[re];B[rd];W[ec];B[qo];W[ee];B[fc];W[rg];B[se];W[ec];B[pn];W[dd];B[pq];W[oo];B[pr];W[on];B[om];W[nm];B[pm];W[mn];B[ng];W[go];B[db];W[ce];B[gb];W[fc];B[bd];W[qq];B[rq];W[bb];B[be];W[cf];B[bf];W[ch];B[cg];W[dg];B[bg];W[di];B[ib];W[ea];B[cc];W[hn];B[jn];W[mc];B[lc];W[md];B[dm];W[hl];B[fo];W[fn];B[fm];W[en];B[dn];W[bl];B[cl];W[bk];B[ck];W[cj];B[gm];W[gn];B[ej];W[gj];B[ei];W[eh];B[gi];W[hi];B[dj];W[fi];B[bj];W[ci];B[bm];W[bi];B[cm];W[dr];B[er];W[eo];B[dp];W[br];B[el];W[hm];B[fk];W[or];B[qr];W[kp];B[lo];W[ln];B[kq];W[lp];B[hr];W[gr];B[lq];W[mp];B[hp];W[gp];B[jr];W[mr];B[lr];W[ks];B[nl];W[jp];B[le];W[qb];B[rb];W[pd];B[qc];W[mf];B[ll];W[mg];B[km];W[id];B[ie];W[da];B[df];W[de];B[ca];W[fa];B[cb];W[je];B[jd];W[jc];B[kd];W[ic];B[hd];W[he];B[if];W[jb];B[hb];W[ia];B[ge];W[gf];B[hf];W[ga];B[gg];W[ff];B[kg];W[nh];B[eg];W[dh];B[ki];W[jo];B[og];W[lh];B[kh];W[nf];B[oi];W[ni];B[nj];W[oh];B[pi];W[ha];B[lb];W[mj];B[mi];W[nk];B[li];W[mh];B[oj];W[ph];B[qh];W[qi];B[qj];W[ri];B[rh];W[mb];B[pb];W[ob];B[mm];W[he];B[nn];W[no];B[ao];W[bp];B[ih];W[hg];B[hh];W[gh];B[ds];W[cs];B[es];W[gs];B[fg];W[kk];B[jk];W[jj];B[ij];W[jl];B[ik];W[ok];B[pj];W[kl];B[il];W[lm];B[kn];W[nm];B[ma];W[na];B[nn];W[dk];B[gl];W[nm];B[ap];W[aq];B[nn];W[gk];B[em];W[nm];B[cq];W[lk];B[ml];W[mk];B[nn];W[mo])(;W[pq];B[do];W[co];B[fc];W[gq];B[hc])),1.1+,1:1,19"
-        gennanCode="(;GM[1]GN[Ear-reddening game]FF[4]CA[UTF-8]RO[]SZ[19]PW[幻庵因硕]PC[日本]KM[0]PB[桑原秀策]RE[B+3]WR[八段]BR[四段]DT[1846-7-25]EV[耳赤的名局];B[qd];W[dc];B[pq];W[oc];B[cp];W[cf];B[ep];W[qo];B[pe];W[np];B[po];W[pp];B[op];W[qp];B[oq];W[oo];B[pn];W[qq];B[nq];W[on];B[pm];W[om];B[pl];W[mp]C[In this game Black put on ①. But Black should have put on ②.](;B[mq];W[ol];B[pk];W[lq];B[lr];W[kr];B[lp];W[kq];B[qr];W[rr];B[rs];W[mr];B[nr];W[pr];B[ps];W[qs];B[no];W[mo];B[qr];W[rm];B[rl];W[qs];B[lo];W[mn];B[qr];W[qm];B[or];W[ql];B[qj];W[rj];B[ri];W[rk];B[ln];W[mm];B[qi];W[rq];B[jn];W[ls];B[ns];W[gq];B[go];W[ck];B[kc];W[ic];B[pc];W[nj];B[ke];W[og];B[oh];W[pb];B[qb];W[ng];B[mi];W[mj];B[nd];W[ph];B[qg];W[pg];B[hq];W[hr];B[ir];W[iq];B[hp];W[jr];B[fc];W[lc];B[ld];W[mc];B[lb];W[mb];B[md];W[qf];B[pf];W[qh];B[rg];W[rh];B[sh];W[rf];B[sg];W[pj];B[pi];W[oi];B[oj];W[ni];B[qk];W[ok];B[qe];W[kb];B[jb];W[ka];B[jc];W[ob];B[ja];W[la];B[db];W[cc];B[fe];W[cn];B[gr];W[is];B[fq];W[io];B[ji];W[eb];B[fb];W[eg];B[dj];W[dk];B[ej];W[cj];B[dh];W[ij];B[hm];W[gj];B[eh];W[fl];B[fg];W[er];B[dm];W[fn];B[dn];W[gn];B[jj];W[jk];B[kk];W[ii];B[ik];W[jl];B[kl];W[il];B[jh];W[co];B[do];W[ih];B[hn];W[hl];B[bl];W[dg];B[gh];W[ch];B[ig];W[ec];B[cr];W[fd];B[gd];W[ed];B[gc];W[bk];B[cm];W[gs];B[gp];W[li];B[kg];W[in];B[lj];W[lg];B[gm];W[jf];B[jg];W[im];B[fm];W[kf];B[lf];W[mf];B[le];W[gf];B[hf];W[ff];B[gg];W[lk];B[kj];W[km];B[lm];W[ll];B[jm];W[ge];B[he];W[ee];B[ea];W[cb];B[fr];W[fs];B[dr];W[qa];B[ra];W[pa];B[rb];W[da];B[gi];W[fj];B[fi];W[fa];B[ga];W[gl];B[ek];W[em];B[ho];W[el];B[en];W[jo];B[kn];W[ci];B[lh];W[mh];B[mg];W[di];B[ei];W[lg];B[qn];W[rn];B[re];W[sl];B[mg];W[bm];B[am];W[lg];B[eq];W[es];B[mg];W[ha];B[gb];W[lg];B[ds];W[hs];B[mg];W[sj];B[si];W[lg];B[sr];W[sq];B[mg];W[hd];B[hb];W[lg];B[ro];W[so];B[mg];W[ss];B[qs];W[lg];B[sn];W[rp];B[mg];W[cl];B[bn];W[lg];B[ml];W[mk];B[mg];W[pj];B[sf];W[lg];B[nn];W[nl];B[mg];W[ib];B[ia];W[lg];B[nc];W[nb];B[mg];W[jd];B[kd];W[lg];B[ma];W[na];B[mg];W[qc];B[rc];W[lg];B[js];W[ks];B[mg];W[hc];B[id];W[lg];B[fk];W[hj];B[mg];W[hh];B[hg];W[lg];B[gk];W[hk];B[mg];W[ak];B[lg];W[al];B[bm];W[nf];B[od];W[ki];B[ms];W[kp];B[ip];W[jp];B[lr];W[oj];B[mr];W[ea];B[sr])(;B[lr];W[lq];B[kr])),0,1:1,19"
-        // gennanCode="(;FF[4]SZ[19]CA[UTF-8]KM[6.5];B[pd];W[dq];B[qp];W[oq](;B[po])(;B[fp])),4.1,1:1,19"
-        // sgf={sgf}
-        // initPath={path}
-        // fulcrumPoint={{ x: 9, y: 1 }}
-        // sideCount={9}
-        usage="viewWide"
-        onSgfChange={setSgf}
-        onPathChange={setPath}
-        onSideCountChanged={(sc) => console.log(sc)}
-        onFulcrumPointChanged={(p) => console.log(p)}
-        onGennanCodeChanged={(c) => console.log(c)}
-      />
-    </div>
+    <>
+      <AlertDialog
+        motionPreset="slideInBottom"
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+      >
+        <AlertDialogOverlay />
+
+        <AlertDialogContent>
+          <AlertDialogHeader>Initialize editing board?</AlertDialogHeader>
+          <AlertDialogCloseButton />
+          <AlertDialogBody>
+            Are you sure you want to initialize editing board? The current board
+            state will be deleted.
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button ref={cancelRef} onClick={onClose}>
+              No
+            </Button>
+            <Button colorScheme="teal" ml={3} onClick={initBoard}>
+              Yes
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Box p={{ base: "1rem", md: "5rem 10rem" }} bg="gray.100">
+        <Heading mb="2rem">Gennan</Heading>
+        <Text>Gennan is a Baduk board component for React.</Text>
+        <Text>
+          <Link
+            href="https://godokoro.net/articles/01F7GN9EB5NV5JA3M1FTJCY2MV"
+            isExternal
+          >
+            How to use ? <ExternalLinkIcon mx="2px" />
+          </Link>
+        </Text>
+
+        <Text mt="1rem">
+          Gennan uses original notation{" "}
+          <Link
+            href="https://godokoro.net/articles/01F7NNXHAN102VTX0W5CCT7WKH#baduk-board"
+            isExternal
+          >
+            Gennan Code <ExternalLinkIcon mx="2px" />
+          </Link>{" "}
+          to express board state.
+        </Text>
+        <Text>The format of the code is below.</Text>
+        <Code colorScheme="blackAlpha">
+          @[gennan]([sgf], [path], [Fulcrum point], [side size])
+        </Code>
+
+        {/* <Text>
+          <Link
+            href="https://godokoro.net/articles/01F7NNXHAN102VTX0W5CCT7WKH#baduk-board"
+            isExternal
+          >
+            More details <ExternalLinkIcon mx="2px" />
+          </Link>
+        </Text> */}
+
+        {/* <Box mt="2rem">
+          <Text>You can install by</Text>
+          <Code colorScheme="blackAlpha">$ npm install gennan</Code>
+          <Text>or</Text>
+          <Code colorScheme="blackAlpha">$ yarn add gennan</Code>
+        </Box> */}
+        <Box mt="1rem">
+          <Link
+            href="https://github.com/harutofujihara/gennan/tree/master"
+            isExternal
+          >
+            <Button leftIcon={<ExternalLinkIcon />} bg="white" size="sm">
+              Github
+            </Button>
+          </Link>
+        </Box>
+
+        <Heading mt="2rem" size={smOrMd}>
+          View game
+        </Heading>
+        <Box d={{ base: "block", md: "flex" }} mt="2rem">
+          {/* <Flex> */}
+
+          <Box d="block" w={{ base: "100%", md: "55%" }}>
+            <Gennan
+              key={viewBoardGennanKey}
+              gennanCode={viewBoardGennanCode}
+              usage="viewWide"
+              onGennanCodeChanged={setViewBoardGennanCode}
+            />
+          </Box>
+
+          <Spacer />
+
+          <Box w={{ base: "100%", md: "40%" }} mt={{ base: "1rem", md: 0 }}>
+            <Textarea
+              resize="none"
+              h={{ base: "200px", md: "100%" }}
+              bg="white"
+              value={viewBoardGennanCode}
+              onChange={handleViewBoardGennanCodeChange}
+            />
+
+            <Flex mt="0.5rem">
+              <Spacer />
+              <Button
+                colorScheme="teal"
+                size="sm"
+                leftIcon={<CopyIcon />}
+                onClick={onCopyViewBoardGennanCode}
+              >
+                Copy gennan code
+              </Button>
+            </Flex>
+          </Box>
+        </Box>
+
+        <Heading mt="5rem" size={smOrMd}>
+          Edit game
+        </Heading>
+        <Flex p="1rem 0">
+          <Button
+            size="sm"
+            bg="white"
+            leftIcon={<RepeatIcon />}
+            mr="1rem"
+            onClick={() => openInitBoardDialog(9)}
+          >
+            9
+          </Button>
+          <Button
+            size="sm"
+            bg="white"
+            leftIcon={<RepeatIcon />}
+            mr="1rem"
+            onClick={() => openInitBoardDialog(13)}
+          >
+            13
+          </Button>
+          <Button
+            size="sm"
+            bg="white"
+            leftIcon={<RepeatIcon />}
+            onClick={() => openInitBoardDialog(19)}
+          >
+            19
+          </Button>
+        </Flex>
+
+        <Box d={{ base: "block", md: "flex" }}>
+          <Box w={{ base: "100%", md: "40%" }}>
+            <Gennan
+              key={editBoardGennanKey}
+              gennanCode={editBoardGennanCode}
+              usage={editBoardUsage}
+              onGennanCodeChanged={setEditBoardGennanCode}
+            />
+          </Box>
+          <Spacer />
+          <Box
+            d="block"
+            w={{ base: "100%", md: "40%" }}
+            mt={{ base: "1rem", md: 0 }}
+          >
+            <Box h="90%" pos={{ base: "static", md: "relative" }}>
+              <Textarea
+                pos={{ base: "static", md: "absolute" }}
+                bottom="0"
+                resize="none"
+                h={{ base: "200px", md: "70%" }}
+                bg="white"
+                value={editBoardGennanCode}
+                onChange={handleEditBoardGennanCodeChange}
+              />
+            </Box>
+            <Flex mt="0.5rem">
+              <Spacer />
+              <Button
+                colorScheme="teal"
+                size="sm"
+                leftIcon={<CopyIcon />}
+                onClick={onCopyEditBoardGennanCode}
+              >
+                Copy gennan code
+              </Button>
+            </Flex>
+          </Box>
+        </Box>
+      </Box>
+    </>
   );
 };
 
