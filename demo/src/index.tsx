@@ -1,5 +1,6 @@
 import React, { FC, useState } from "react";
 import ReactDOM from "react-dom";
+import "../../css/index.css";
 import { Gennan, Usage } from "../../src";
 import {
   ChakraProvider,
