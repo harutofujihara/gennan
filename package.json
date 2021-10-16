@@ -10,7 +10,7 @@
     "test": "jest",
     "dev": "webpack-cli serve --mode development --config webpack.dev.js",
     "build:demo": "webpack --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js --mode development"
+    "build": "webpack --config webpack.prod.js --mode production"
   },
   "repository": {
     "type": "git",
