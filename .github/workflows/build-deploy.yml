@@ -21,6 +21,13 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
+      - name: Build project
+        run: npm run build
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
 
       - name: Install NPM packages
         run: npm ci
@@ -30,13 +37,6 @@ jobs:
 
       # - name: Run tests
       #   run: npm run test
-      - name: Build project
-        run: npm run build
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v2
