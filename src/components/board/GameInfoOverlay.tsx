@@ -1,10 +1,4 @@
 import React, { FC, useCallback, memo } from "react";
-import styled from "styled-components";
-
-const StyledInput = styled.input`
-  width: 100%;
-  margin 10px auto;
-`;
 
 type InputProps = {
   defaultValue: string;
@@ -23,7 +17,8 @@ const Input: FC<InputProps> = memo(
     );
 
     return (
-      <StyledInput
+      <input
+        style={{ width: "100%", margin: "10px auto" }}
         defaultValue={defaultValue}
         onChange={handleChange}
         disabled={disabled}
