@@ -1,0 +1,29 @@
+.flat-simple-button {
+  position: relative;
+  display: inline-block;
+  font-weight: bold;
+  padding: 0.25em 0.5em;
+  text-decoration: none;
+  color: #333333;
+  background: #ececec;
+  transition: 0.4s;
+  cursor: pointer;
+}
+.flat-simple-button:hover {
+  background: #808080;
+  color: white;
+}
+
+.edit-mode-button {
+  display: inline-block;
+  text-decoration: none;
+  color: black;
+  text-align: center;
+  overflow: hidden;
+  font-weight: bold;
+  transition: 0.4s;
+  cursor: pointer;
+}
+.edit-mode-button:hover {
+  background: "#c0c0c0";
+}

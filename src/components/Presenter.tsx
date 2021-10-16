@@ -6,15 +6,7 @@ import React, {
   ChangeEvent,
   Ref,
 } from "react";
-import styled, { css } from "styled-components";
-import {
-  GridNum,
-  Point,
-  ViewBoard,
-  assertIsDefined,
-  Board,
-  cloneNode,
-} from "gennan-core";
+import { GridNum, Point, ViewBoard, assertIsDefined } from "gennan-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   // faImage,
@@ -26,14 +18,11 @@ import {
   faTimes,
   faSortNumericDown,
   faFont,
-  faHandPointUp,
   faCaretUp,
   faCircle as faFillCircle,
   faCaretRight,
   faExpand,
   faCompress,
-  faPlusCircle,
-  faMinusCircle,
   faSearchPlus,
   faSearchMinus,
   faStop,
@@ -41,7 +30,6 @@ import {
   faFileImport,
   faArrowRight,
   faArrowLeft,
-  faImage,
   faCamera,
   faChevronRight,
   faChevronLeft,
@@ -65,83 +53,6 @@ import { EditModeInfo } from "./Container";
 import { SvgBoard } from "./board/SvgBoard";
 import { GameInfoOverlay } from "./board/GameInfoOverlay";
 import { useDrag } from "react-use-gesture";
-
-const EditModeButton = styled.a`
-  ${({
-    width,
-    border,
-    isActive,
-  }: {
-    width: number;
-    border: number;
-    isActive: boolean;
-  }) => css`
-    display: inline-block;
-    text-decoration: none;
-    width: ${`${width}px`};
-    height: ${`${width}px`};
-    line-height: ${`${width}px`};
-    font-size: ${`${width / 1.5}px`};
-    color: black;
-    border: solid ${`${border}px black`};
-    text-align: center;
-    overflow: hidden;
-    font-weight: bold;
-    transition: 0.4s;
-    background: ${isActive ? "#b0b0b0" : "#f0f0f0"};
-    cursor: pointer;
-    i {
-      line-height: ${`${width}px`};
-    }
-    &:hover {
-      background: #c0c0c0;
-    }
-  `}
-`;
-
-// const IButton = styled.a`
-//   ${({ width, border }: { width: number; border: number }) => css`
-//     display: inline-block;
-//     text-decoration: none;
-//     width: ${`${width}px`};
-//     height: ${`${width}px`};
-//     line-height: ${`${width}px`};
-//     font-size: ${`${width / 1.5}px`};
-//     color: black;
-//     border: ${`solid ${border}px black`};
-//     text-align: center;
-//     overflow: hidden;
-//     font-weight: bold;
-//     transition: 0.4s;
-//     i {
-//       line-height: ${`${width}px`};
-//     }
-//     &:hover {
-//       background: #c0c0c0;
-//     }
-//   `}
-// `;
-
-// const ICircleButton = styled(IButton)`
-//   border-radius: 50%;
-// `;
-
-const FlatSimpleButton = styled.a`
-  position: relative;
-  display: inline-block;
-  font-weight: bold;
-  padding: 0.25em 0.5em;
-  text-decoration: none;
-  color: #333333;
-  background: #ececec;
-  transition: 0.4s;
-  cursor: pointer;
-
-  &:hover {
-    background: #808080;
-    color: white;
-  }
-`;
 
 const EditModeIcons: Array<{ el: JSX.Element; em: EditMode }> = [
   {
@@ -377,15 +288,21 @@ export const Presenter: FC<Props> = ({
     const icon = EditModeIcons.find((emi) => emi.em === info.em);
     assertIsDefined(icon);
     return (
-      <EditModeButton
-        width={boardContainerWidthPx / 20}
-        border={boardContainerWidthPx / 300}
-        isActive={info.isActive}
+      <a
+        className="edit-mode-button"
         key={i}
         onClick={info.onClick}
+        style={{
+          width: boardContainerWidthPx / 20 + "px",
+          height: boardContainerWidthPx / 20 + "px",
+          background: info.isActive ? "#b0b0b0" : "#f0f0f0",
+          lineHeight: boardContainerWidthPx / 20 + "px",
+          fontSize: boardContainerWidthPx / 20 / 1.5 + "px",
+          border: "solid " + boardContainerWidthPx / 300 + "px black",
+        }}
       >
         {icon.el as JSX.Element}
-      </EditModeButton>
+      </a>
     );
   });
 
@@ -723,12 +640,13 @@ export const Presenter: FC<Props> = ({
               Set handicap stones
             </p>
 
-            <FlatSimpleButton
+            <a
+              className="flat-simple-button"
               style={{ fontSize: `${boardContainerWidthPx / 30}px` }}
               onClick={onClickNextButton}
             >
               Record game context next <FontAwesomeIcon icon={faCaretRight} />
-            </FlatSimpleButton>
+            </a>
           </>
         )}
 
@@ -805,7 +723,8 @@ export const Presenter: FC<Props> = ({
         )}
         {mode === Mode.EditMagnification && (
           <>
-            <FlatSimpleButton
+            <a
+              className="flat-simple-button"
               style={{
                 fontSize: `${boardContainerWidthPx / 30}px`,
                 marginRight: "1rem",
@@ -820,7 +739,7 @@ export const Presenter: FC<Props> = ({
               }
             >
               <FontAwesomeIcon icon={faArrowLeft} /> Cancel
-            </FlatSimpleButton>
+            </a>
 
             <FontAwesomeIcon
               icon={faSearchMinus}
@@ -847,7 +766,8 @@ export const Presenter: FC<Props> = ({
               onClick={() => !isPreviewing && expandMagnification()}
             />
 
-            <FlatSimpleButton
+            <a
+              className="flat-simple-button"
               style={{
                 fontSize: `${boardContainerWidthPx / 30}px`,
                 position: "absolute",
@@ -863,7 +783,7 @@ export const Presenter: FC<Props> = ({
             >
               {isPreviewing ? "Confirm" : "Preview"}{" "}
               <FontAwesomeIcon icon={faArrowRight} />
-            </FlatSimpleButton>
+            </a>
           </>
         )}
       </div>
