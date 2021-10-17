@@ -1,6 +1,6 @@
 {
   "name": "gennan",
-  "version": "1.0.46",
+  "version": "0.0.0-semantic-release",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -48,7 +48,6 @@
     "prettier": "^2.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "semantic-release": "^18.0.0",
     "style-loader": "^3.3.0",
     "ts-jest": "^26.4.4",
     "ts-loader": "^8.0.12",
