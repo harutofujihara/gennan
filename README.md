@@ -1,5 +1,12 @@
 # gennan
 
+### [Demo](https://harutofujihara.github.io/gennan/)
+
+## Install
+```sh
+$ npm install gennan
+```
+
 ## Usage
 ```js
 import React, { useState } from 'react';
@@ -24,6 +31,15 @@ render(<Gennan />, document.getElementById("app"));
 ## Props
 | Props            | Description                                             | Type                                        | Default |
 |------------------|---------------------------------------------------------|---------------------------------------------|---------|
-| gennanCode         | key binds                                               | string               |         |
-| onGennanCodeChanged | class name to be applied to preview area                | (gncd: string) => void                                            |    |
-| usage  | morphdom callbacks to be applied to preview area        | "viewWide" \| "view" \| "new" \| "edit"                    |       |
+| sgf | Smart Go Format | string | |
+| gridNum | board grid number | GridNum | 19 |
+| gennanCode         | gennan code format                                              | string               |         | |
+| usage | usage | Usage | "view" |
+| initPath | initial path of the game | TreePath | |
+| onSgfChange | callback when sgf changed | (sgf: string) => void | |
+| onPathChange | callback when current path changed | (path: TreePath) => void | |
+| onSideCountChanged | callback when board size changed | (sc: number) => void | |
+| onGennanCodeChanged | callback when current gennan code changed                | (gncd: string) => void                                            |    | |
+| onFulcrumPointChanged | callback when fulcrum point changed | (p: Point) => void | |
+| sideCount | for display scale | number | |
+| fulcrumPoint | for display scale | Point | { x: 1, y: 1 } |
