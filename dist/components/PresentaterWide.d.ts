@@ -1,0 +1,28 @@
+import { FC, Ref } from "react";
+import { Point, ViewBoard } from "gennan-core";
+declare type Props = {
+    handlePointClicked?: (p: Point) => void;
+    sideNum: number;
+    fulcrumPoint: Point;
+    viewBoard: ViewBoard;
+    gameName?: string;
+    gameDate?: string;
+    gameResult?: string;
+    komi?: string;
+    blackPlayer?: string;
+    whitePlayer?: string;
+    comment?: string;
+    playForward?: () => void;
+    playForwardTimes?: () => void;
+    playBackward?: () => void;
+    playBackwardTimes?: () => void;
+    isPlayIconActive?: boolean;
+    isTurnedPlayIconActive?: boolean;
+    isScaleVisible?: boolean;
+    toggleIsScaleVisible: () => void;
+    downloadSgf: () => void;
+    svgBoardRef: Ref<SVGSVGElement>;
+    downloadBoardImage: () => Promise<void>;
+};
+export declare const PresenterWide: FC<Props>;
+export {};

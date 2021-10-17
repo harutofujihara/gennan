@@ -1,0 +1,32 @@
+import { TreePath, GennanCore, Point, Stone, Move, MarkupSymbol } from "gennan-core";
+declare type Args = {
+    initGnc: GennanCore;
+    onSgfChange?: (sgf: string) => void;
+    onPathChange?: (path: TreePath) => void;
+};
+declare type Operation = {
+    forward: (i: number) => void;
+    forwardTimes: (times?: number) => void;
+    backward: () => void;
+    backwardTimes: (times?: number) => void;
+    addFixedStone: (stone: Stone) => void;
+    removeFixedStone: (stone: Stone) => void;
+    addMove: (move: Move) => void;
+    removeMove: () => void;
+    setSymbol: (point: Point, symbol: MarkupSymbol) => void;
+    removeSymbol: (point: Point, symbol: MarkupSymbol) => void;
+    setAlpha: (point: Point) => void;
+    setIncrement: (point: Point) => void;
+    removeText: (point: Point) => void;
+    setGameName: (gn: string) => void;
+    setGameDate: (gd: string) => void;
+    setGameResult: (re: string) => void;
+    setKomi: (komi: string) => void;
+    setComment: (comment: string) => void;
+    setBlackPlayer: (bp: string) => void;
+    setWhitePlayer: (wp: string) => void;
+    takeSnapshot: () => void;
+    importSgf: (sgf: string) => void;
+};
+declare const useGennanCore: ({ initGnc, onSgfChange, onPathChange, }: Args) => [GennanCore, Operation];
+export { useGennanCore };
