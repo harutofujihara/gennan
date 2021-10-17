@@ -188,10 +188,7 @@ const Page = () => {
           <Code colorScheme="blackAlpha">$ yarn add gennan</Code>
         </Box> */}
         <Box mt="1rem">
-          <Link
-            href="https://github.com/harutofujihara/gennan/tree/master"
-            isExternal
-          >
+          <Link href="https://github.com/harutofujihara/gennan/" isExternal>
             <Button leftIcon={<ExternalLinkIcon />} bg="white" size="sm">
               Github
             </Button>
