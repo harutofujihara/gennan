@@ -1,4 +1,11 @@
-src
-dev
-node_modules
+src/
+demo/
+node_modules/
 webpack.config.js
+.gihub/
+.vscode/
+.eslintrc.json
+.prettierignore
+.prettierrc.json
+webpack.dev.js
+webpack.prod.js
