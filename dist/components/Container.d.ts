@@ -4,17 +4,17 @@ import { EditMode, Usage } from "../types";
 export declare type Props = {
     sgf?: string;
     gridNum?: GridNum;
+    gennanCode?: string;
     usage?: Usage;
-    initPath?: Array<number>;
+    initPath?: TreePath;
     onSgfChange?: (sgf: string) => void;
     onPathChange?: (path: TreePath) => void;
     onSideCountChanged?: (sc: number) => void;
     onFulcrumPointChanged?: (p: Point) => void;
+    onGennanCodeChanged?: (gncd: string) => void;
     lang?: "ja" | "en";
     sideCount?: number;
     fulcrumPoint?: Point;
-    gennanCode?: string;
-    onGennanCodeChanged?: (gncd: string) => void;
 };
 export declare type EditModeInfo = {
     em: EditMode;
