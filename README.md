@@ -1,7 +1,5 @@
 # gennan
 
-### [Demo](https://harutofujihara.github.io/gennan/)
-
 ## Install
 ```sh
 $ npm install gennan
